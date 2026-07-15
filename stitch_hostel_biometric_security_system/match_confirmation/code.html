@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Biometric Scan Confirmation</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "secondary-fixed": "#d3e4fe",
+                            "tertiary": "#943700",
+                            "error": "#ba1a1a",
+                            "surface-container-lowest": "#ffffff",
+                            "on-secondary-fixed-variant": "#38485d",
+                            "on-tertiary-fixed": "#360f00",
+                            "primary-fixed": "#dbe1ff",
+                            "on-surface": "#191b23",
+                            "on-surface-variant": "#434655",
+                            "primary-fixed-dim": "#b4c5ff",
+                            "tertiary-fixed-dim": "#ffb596",
+                            "on-error-container": "#93000a",
+                            "on-primary-fixed": "#00174b",
+                            "surface-container": "#ededf9",
+                            "on-tertiary": "#ffffff",
+                            "inverse-surface": "#2e3039",
+                            "surface-variant": "#e1e2ed",
+                            "tertiary-container": "#bc4800",
+                            "tertiary-fixed": "#ffdbcd",
+                            "background": "#faf8ff",
+                            "surface-container-low": "#f3f3fe",
+                            "surface-container-highest": "#e1e2ed",
+                            "inverse-primary": "#b4c5ff",
+                            "on-tertiary-fixed-variant": "#7d2d00",
+                            "secondary-container": "#d0e1fb",
+                            "secondary": "#505f76",
+                            "on-error": "#ffffff",
+                            "surface": "#faf8ff",
+                            "surface-bright": "#faf8ff",
+                            "on-primary-container": "#eeefff",
+                            "secondary-fixed-dim": "#b7c8e1",
+                            "outline": "#737686",
+                            "on-primary-fixed-variant": "#003ea8",
+                            "error-container": "#ffdad6",
+                            "surface-dim": "#d9d9e5",
+                            "outline-variant": "#c3c6d7",
+                            "on-primary": "#ffffff",
+                            "primary-container": "#2563eb",
+                            "surface-container-high": "#e7e7f3",
+                            "on-background": "#191b23",
+                            "on-secondary": "#ffffff",
+                            "on-secondary-fixed": "#0b1c30",
+                            "primary": "#004ac6",
+                            "surface-tint": "#0053db",
+                            "inverse-on-surface": "#f0f0fb",
+                            "on-tertiary-container": "#ffede6",
+                            "on-secondary-container": "#54647a"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px",
+                            "bottom-sheet": "24px"
+                    },
+                    "spacing": {
+                            "grid-gutter": "20px",
+                            "stack-gap": "16px",
+                            "container-padding": "24px",
+                            "inline-element-gap": "8px"
+                    },
+                    "fontFamily": {
+                            "body-sm": ["Inter"],
+                            "mono-data": ["Inter"],
+                            "label-caps": ["Inter"],
+                            "headline-md": ["Inter"],
+                            "display-bold": ["Inter"],
+                            "body-base": ["Inter"]
+                    },
+                    "fontSize": {
+                            "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                            "mono-data": ["14px", {"lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                            "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                            "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                            "display-bold": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "body-base": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-base antialiased h-screen w-full flex flex-col md:flex-row overflow-hidden relative">
+<!-- Mobile View Simulation Container -->
+<div class="flex-1 w-full h-full bg-surface-variant flex flex-col md:flex-row items-center justify-center gap-8 p-4">
+<!-- State 1: Match Bottom Sheet Simulation -->
+<div class="relative w-full max-w-[375px] h-[812px] bg-black rounded-[40px] overflow-hidden shadow-2xl flex flex-col justify-end border-8 border-black">
+<!-- Simulated Camera Background -->
+<div class="absolute inset-0 bg-inverse-surface opacity-80" data-alt="A subtle, blurry background of a well-lit modern hostel corridor, focusing on a biometric scanning station. The lighting is cool, clinical white light typical of a secure environment. The overall tone is corporate minimalist, reinforcing trust and technological precision. Deep slate greys and crisp whites dominate the blurry background." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAILsgZXvr6mq9UBmm8E6FOqL2MRQGACZTfQUdjCiWQBg_bLqYC6rley5gm2aU4P8JLC5MQNjtmwwpzdZhPG3OcEz43vbDPGN-5LkIFfuksSg7g4MkeqiKVmKPbXLX8o3UjI0wGslbWUmxShgRvVFiIu_l1Yj9zRFPyoAiB3kxulkEq5iQYxs93pQMyBk-q4bwPpWbIhsQRpmvh5LcngW_JEWjsyeDW45ucrawJdbDrZTyMliHtpCnrnR7o8wmVx-q0tzHtsN8-cw'); background-size: cover; background-position: center;"></div>
+<!-- Backdrop Overlay -->
+<div class="absolute inset-0 bg-black/60 z-10"></div>
+<!-- Bottom Sheet -->
+<div class="relative z-20 w-full bg-surface rounded-t-bottom-sheet pt-2 pb-container-padding px-container-padding flex flex-col items-center animate-[slideUp_0.3s_ease-out]">
+<!-- Drag Handle -->
+<div class="w-12 h-1.5 bg-outline-variant rounded-full mb-6"></div>
+<!-- Match Indicator -->
+<div class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full font-label-caps text-label-caps mb-6 flex items-center gap-1">
+<span class="material-symbols-outlined filled text-[16px]">check_circle</span>
+                    Match Confidence: 98%
+                </div>
+<!-- Profile Section -->
+<div class="relative mb-4">
+<img alt="Student Profile" class="w-[90px] h-[90px] rounded-full object-cover border-4 border-primary" data-alt="A clear, professional headshot of a male college student with short dark hair, wearing a casual navy t-shirt. The portrait is sharply focused against a neutral white background, simulating a formal ID photo. The lighting is even and flat, typical of an official database record. High-key light mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBmJ-upyrGjltaXQAISw6bHxBkxkk3sWCb3d1mT84NDsAM6qDI7m0xqTPApfodIogVjtiDQ2LBr8rzg-7bc2FdfKYbvMrCVchIvHJVsVIEIQ3AXf0cJJzMBQzPDEoFr6tbF3L7D8s3CdZlTcA_lwM_xGqo0sL28kWl2QXNMEdDI_wxphtv32CPBqUn6JHNmsndmA72lelLyJOGPaxhuh0ZxzpOtyVFZazsx5za0C7EtPin2iMxS4VtoSPbRobadpsBik15rpKSQuQ"/>
+<div class="absolute bottom-0 right-0 bg-surface text-primary rounded-full p-1 border-2 border-surface">
+<span class="material-symbols-outlined filled text-[20px]">verified</span>
+</div>
+</div>
+<!-- Student Details -->
+<h2 class="font-headline-md text-headline-md text-on-surface mb-1">Alex Mercer</h2>
+<div class="flex gap-4 text-on-surface-variant font-mono-data text-mono-data mb-8">
+<span>Roll: 21CS001</span>
+<span class="w-1 h-1 bg-outline-variant rounded-full self-center"></span>
+<span>Room: D-304</span>
+</div>
+<!-- Action Button -->
+<button class="w-full bg-error hover:bg-on-error-container text-on-error py-4 rounded-xl font-headline-md text-headline-md shadow-sm transition-colors mb-2">
+                    CONFIRM CHECK-OUT
+                </button>
+<button class="w-full py-3 text-secondary font-body-sm text-body-sm hover:bg-surface-container rounded-lg transition-colors">
+                    Cancel
+                </button>
+</div>
+</div>
+<!-- State 2: Unknown Bottom Sheet Simulation -->
+<div class="relative w-full max-w-[375px] h-[812px] bg-black rounded-[40px] overflow-hidden shadow-2xl flex flex-col justify-end border-8 border-black">
+<!-- Simulated Camera Background -->
+<div class="absolute inset-0 bg-inverse-surface opacity-80" data-alt="A blurred background showing a modern access control point with a closed security gate. The lighting is slightly dim, emphasizing a secure, restricted area. The color palette features cool greys, slate, and a hint of warning red lighting in the distance. The mood is strict, clinical, and authoritative." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCcSzFm1U508Ym0hhBJp80b4DwThDe0TtrSAgBtiiNZ2WOFx9hq_5HUznZgwpoMhG7gg9bQXwR6LJiVDVMIeGdPX_1xX8y7W_EUvn9KqZ7zfskR_h-6P_MDkE-dJuvf2beZrOhYfFqYs-ySTuWc5wi5XDeL3P-qrD63BccmYI5Qn334mE9mPN19-BGAjjxneupIWpcvuK7Uzf0eDiP5k2Lx_GcWxDaRdrzFcW5mgqu5Bvr-baV8aPaSa-ayPvPgE0t-htIMYU2k8w'); background-size: cover; background-position: center;"></div>
+<!-- Backdrop Overlay -->
+<div class="absolute inset-0 bg-black/60 z-10"></div>
+<!-- Bottom Sheet -->
+<div class="relative z-20 w-full bg-surface rounded-t-bottom-sheet pt-2 pb-container-padding px-container-padding flex flex-col items-center animate-[slideUp_0.3s_ease-out]">
+<!-- Drag Handle -->
+<div class="w-12 h-1.5 bg-outline-variant rounded-full mb-6"></div>
+<!-- Error Icon -->
+<div class="w-[90px] h-[90px] rounded-full bg-error-container flex items-center justify-center mb-4 shadow-sm border-2 border-error">
+<span class="material-symbols-outlined text-[48px] text-error">warning</span>
+</div>
+<!-- Error Details -->
+<h2 class="font-headline-md text-headline-md text-error mb-2">Unknown Person</h2>
+<p class="text-on-surface-variant font-body-base text-body-base text-center mb-8 max-w-[280px]">
+                    Biometric scan failed to find a match in the active roster.
+                </p>
+<!-- Action Button -->
+<button class="w-full bg-surface-container-highest border border-outline-variant hover:bg-surface-dim text-on-surface py-4 rounded-xl font-headline-md text-headline-md shadow-sm transition-colors flex justify-center items-center gap-2 mb-2">
+<span class="material-symbols-outlined">restart_alt</span>
+                    Try Scanning Again
+                </button>
+<button class="w-full py-3 text-secondary font-body-sm text-body-sm hover:bg-surface-container rounded-lg transition-colors">
+                    Manual Override (Admin)
+                </button>
+</div>
+</div>
+</div>
+<style>
+        @keyframes slideUp {
+            from { transform: translateY(100%); }
+            to { transform: translateY(0); }
+        }
+    </style>
+</body></html>

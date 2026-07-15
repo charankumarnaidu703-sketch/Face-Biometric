@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hostel Biometric - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#d3e4fe",
+                        "tertiary": "#943700",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "on-tertiary-fixed": "#360f00",
+                        "primary-fixed": "#dbe1ff",
+                        "on-surface": "#191b23",
+                        "on-surface-variant": "#434655",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#00174b",
+                        "surface-container": "#ededf9",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#2e3039",
+                        "surface-variant": "#e1e2ed",
+                        "tertiary-container": "#bc4800",
+                        "tertiary-fixed": "#ffdbcd",
+                        "background": "#faf8ff",
+                        "surface-container-low": "#f3f3fe",
+                        "surface-container-highest": "#e1e2ed",
+                        "inverse-primary": "#b4c5ff",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "secondary-container": "#d0e1fb",
+                        "secondary": "#505f76",
+                        "on-error": "#ffffff",
+                        "surface": "#faf8ff",
+                        "surface-bright": "#faf8ff",
+                        "on-primary-container": "#eeefff",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "outline": "#737686",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#d9d9e5",
+                        "outline-variant": "#c3c6d7",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#2563eb",
+                        "surface-container-high": "#e7e7f3",
+                        "on-background": "#191b23",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed": "#0b1c30",
+                        "primary": "#004ac6",
+                        "surface-tint": "#0053db",
+                        "inverse-on-surface": "#f0f0fb",
+                        "on-tertiary-container": "#ffede6",
+                        "on-secondary-container": "#54647a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "grid-gutter": "20px",
+                        "stack-gap": "16px",
+                        "container-padding": "24px",
+                        "inline-element-gap": "8px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "mono-data": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-bold": ["Inter"],
+                        "body-base": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "mono-data": ["14px", { "lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "display-bold": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-base": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: #F8FAFC; } /* Light slate grey override per prompt */
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="text-on-background font-body-base">
+<!-- Desktop Navigation Drawer (Hidden on Mobile) -->
+<aside class="hidden md:flex flex-col h-full w-[240px] fixed left-0 top-0 bg-surface shadow-md py-container-padding z-50">
+<div class="px-4 mb-8">
+<h1 class="font-display-bold text-display-bold text-primary">Hostel Biometric</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Security Management</p>
+<p class="font-label-caps text-label-caps text-outline mt-1">v1.0.2</p>
+</div>
+<nav class="flex flex-col gap-1 flex-1">
+<a class="flex items-center gap-inline-element-gap bg-secondary-container text-on-secondary-container rounded-xl px-4 py-3 mx-2 scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+<a class="flex items-center gap-inline-element-gap text-on-surface-variant hover:bg-surface-container-high transition-colors px-4 py-3 mx-2 rounded-xl" href="#">
+<span class="material-symbols-outlined">person_add</span>
+<span class="font-label-caps text-label-caps">Registration</span>
+</a>
+<a class="flex items-center gap-inline-element-gap text-on-surface-variant hover:bg-surface-container-high transition-colors px-4 py-3 mx-2 rounded-xl" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-caps text-label-caps">Roster</span>
+</a>
+<a class="flex items-center gap-inline-element-gap text-on-surface-variant hover:bg-surface-container-high transition-colors px-4 py-3 mx-2 rounded-xl" href="#">
+<span class="material-symbols-outlined">qr_code_scanner</span>
+<span class="font-label-caps text-label-caps">Gate Scan</span>
+</a>
+<a class="flex items-center gap-inline-element-gap text-on-surface-variant hover:bg-surface-container-high transition-colors px-4 py-3 mx-2 rounded-xl" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-caps text-label-caps">Activity Logs</span>
+</a>
+</nav>
+<div class="px-4 mt-auto">
+<div class="flex items-center gap-3 py-3 border-t border-outline-variant">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A small, professional headshot of an administrator in a light, modern office setting. The person looks approachable and competent. The lighting is soft and bright, fitting a high-end corporate or institutional dashboard." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-bMrjKnv9kw0gEfPfFMamEpIueeuwnCCxSqopb9mW3DOPFQuolPUSMlFUd-7kTa_jt90N4MPT-C2lmhKHNC5pXYKw5st49YRJd-3SbnarVPmdCY32Mi-P21DIemCgvOuF8sURmSceEpfm-538rYdqQBl-hldKfQsoUTsCUV2p4SMRt5hIf_ipx4yEhmP58yX7ZCg4NkTMPaVj5Gju-PXZw4jf43Fcf__5QkTx5NT0lOQlQPalgFqyI1wnzpr-N-NrUv3ooHSP7Q"/>
+<div>
+<p class="font-mono-data text-mono-data text-on-surface">Admin User</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Hostel Manager</p>
+</div>
+</div>
+</div>
+</aside>
+<!-- Top App Bar (Desktop & Mobile) -->
+<header class="flex justify-between items-center h-16 px-container-padding w-full md:pl-[264px] bg-surface border-b border-outline-variant docked full-width top-0 z-40 fixed">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-on-surface-variant hover:bg-surface-container-low rounded-full p-2">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h2 class="font-headline-md text-headline-md text-primary font-bold md:hidden">Hostel Biometric</h2>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container-low rounded-full p-2">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<img class="w-8 h-8 rounded-full bg-surface-container-high object-cover md:hidden" data-alt="A small circular avatar placeholder for the currently logged-in administrator, showing a generic professional silhouette on a light grey background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4mPXGLRn77rRbd9kF3ZEo9W9EKKyRTdTrru-Cxm3U0OHWjhR1dbsOmMuzDlEnmPPw12TitnbPrmVj7BEjtWa0Y7mtQtCQDEW-grwoz8Icv1sgPN4F2B0b_lxq9v7sWaHH1Pc8ziGYaHXpK2qus9WYn8szO5dmi5czfhtaXF9bxuSfCakHtYrEiXffZFiTiVK-In2IVpyymTB-wFtGl_Pk2nCDQ2HDqfS7Gj5DWjxHQuxSA-Bc9R5KLY5sIeLjnDybgmWtH7xyoA"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="pt-[88px] pb-24 md:pb-8 px-container-padding md:pl-[264px] max-w-7xl mx-auto min-h-screen">
+<!-- Header Section -->
+<div class="mb-8">
+<h1 class="font-display-bold text-display-bold text-on-surface mb-2">Welcome Back, Admin 👋</h1>
+<p class="font-body-base text-body-base text-on-surface-variant">St. Jude Engineering Hostel</p>
+</div>
+<!-- Metric Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-grid-gutter mb-8">
+<div class="bg-surface-container-lowest rounded-[16px] shadow-sm p-6 border border-outline-variant flex flex-col justify-between h-full">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-secondary">groups</span>
+<h3 class="font-body-sm text-body-sm text-on-surface-variant">Total Students</h3>
+</div>
+<div>
+<p class="font-display-bold text-display-bold text-on-surface text-[32px]">482</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-[16px] shadow-sm p-6 border border-outline-variant flex flex-col justify-between h-full relative overflow-hidden">
+<div class="flex items-center justify-between mb-4">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">face</span>
+<h3 class="font-body-sm text-body-sm text-on-surface-variant">Enrolled Faces</h3>
+</div>
+<span class="bg-primary/10 text-primary font-label-caps text-label-caps px-2 py-1 rounded-md">+6 this week</span>
+</div>
+<div>
+<p class="font-display-bold text-display-bold text-on-surface text-[32px]">476</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-[16px] shadow-sm p-6 border border-outline-variant flex flex-col justify-between h-full">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-secondary">logout</span>
+<h3 class="font-body-sm text-body-sm text-on-surface-variant">Currently OUT</h3>
+</div>
+<div>
+<p class="font-display-bold text-display-bold text-error text-[32px]">38</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-[16px] shadow-sm p-6 border border-outline-variant flex flex-col justify-between h-full">
+<div class="flex items-center gap-2 mb-4">
+<span class="material-symbols-outlined text-secondary">login</span>
+<h3 class="font-body-sm text-body-sm text-on-surface-variant">Currently IN</h3>
+</div>
+<div>
+<p class="font-display-bold text-display-bold text-[#10B981] text-[32px]">444</p>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-grid-gutter">
+<!-- Quick Actions -->
+<div class="lg:col-span-1 flex flex-col gap-stack-gap">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2">Quick Actions</h3>
+<button class="w-full bg-primary text-on-primary rounded-[12px] py-4 px-6 shadow-sm flex items-center justify-center gap-2 font-mono-data text-mono-data hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined">person_add</span>
+                    + Register New Student
+                </button>
+<button class="w-full bg-surface-container-lowest text-primary border border-primary/20 rounded-[12px] py-4 px-6 shadow-sm flex items-center justify-center gap-2 font-mono-data text-mono-data hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined">manage_accounts</span>
+                    View Roster &amp; Student Profiles
+                </button>
+</div>
+<!-- Analytics / Recent -->
+<div class="lg:col-span-2 bg-surface-container-lowest rounded-[16px] shadow-sm p-6 border border-outline-variant">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-6">System Status</h3>
+<div class="mb-6">
+<div class="flex justify-between items-end mb-2">
+<span class="font-body-base text-body-base text-on-surface-variant">Enrolled Face Biometrics</span>
+<span class="font-mono-data text-mono-data text-primary">98% complete</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full rounded-full" style="width: 98%;"></div>
+</div>
+</div>
+<div>
+<h4 class="font-body-sm text-body-sm text-on-surface-variant mb-4 uppercase tracking-wider">Recent Access Logs</h4>
+<div class="flex flex-col">
+<div class="flex items-center gap-4 py-3 border-b border-surface-container-high">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A small, clear photo of a male student entering a secure facility. The lighting is bright and even, typical of a security camera in a well-lit corridor." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBpCCrYi9ZTdp76qB1tsucOSb1Qu8pP3BygqPFnOZT76mtEhLgMxS4EaZiY3zSr89EmGEI97HjxhOqeHgAKyVIA33ethjcMrr9dq4rozV6QxfAnQnZPXDsXTQmWXk1hj0HPXCl_6TVT8L7sbz3T8OPuFgNUOPy5UydBN3CoMDZqkTMbCkabWU34gKLdYqceWqEYnRtbGoCyghDNC8rLj1kZY358sYKIe-jD5kL-E6tdH7OrJtL4ua1NDYDS9i6kP7n8NAIUfxIGCA"/>
+</div>
+<div class="flex-1">
+<p class="font-body-base text-body-base text-on-surface">John Doe (Room 204)</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Today, 08:14 AM</p>
+</div>
+<span class="bg-[#10B981]/10 text-[#10B981] font-label-caps text-label-caps px-2 py-1 rounded">IN</span>
+</div>
+<div class="flex items-center gap-4 py-3">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A small, clear photo of a female student leaving a secure facility. The lighting is bright and even, typical of a security camera in a well-lit corridor." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9IwCYnANhhEAlBPyIrjsA1OR9QCZi1wQUnl2g31WOeOLpemxcYsNky_FyOEimFY3x9j73efROODP9uDPh8jTYEhGLVOLPBtn80ayrf8Fk01zhzwJG9JgoAI3muuvm33t_0TvH8e9R6vAv-vgzzMv6082xY4Xe3jkI5lv3UCglH-yvajPSqGvO7UIeWu3Z-3AsFUSu12CC6o6SojlvnIkeKL0A0kmtfb0YnnYnqJc4A9pfjJD-rEu-1Pzj_eTLq8Jk8O1PwkO84A"/>
+</div>
+<div class="flex-1">
+<p class="font-body-base text-body-base text-on-surface">Sarah Connor (Room 112)</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Today, 07:45 AM</p>
+</div>
+<span class="bg-error/10 text-error font-label-caps text-label-caps px-2 py-1 rounded">OUT</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Mobile Bottom Navigation (Hidden on Desktop) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-2 bg-surface border-t border-outline-variant shadow-sm z-50">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-5 py-1 scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="font-label-caps text-label-caps">Dash</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant py-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">how_to_reg</span>
+<span class="font-label-caps text-label-caps">Reg</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant py-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">document_scanner</span>
+<span class="font-label-caps text-label-caps">Scan</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant py-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">list_alt</span>
+<span class="font-label-caps text-label-caps">Logs</span>
+</a>
+</nav>
+</body></html>

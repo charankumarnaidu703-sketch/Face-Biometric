@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gate Audit Ledger</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                            "secondary-fixed": "#d3e4fe",
+                            "tertiary": "#943700",
+                            "error": "#ba1a1a",
+                            "surface-container-lowest": "#ffffff",
+                            "on-secondary-fixed-variant": "#38485d",
+                            "on-tertiary-fixed": "#360f00",
+                            "primary-fixed": "#dbe1ff",
+                            "on-surface": "#191b23",
+                            "on-surface-variant": "#434655",
+                            "primary-fixed-dim": "#b4c5ff",
+                            "tertiary-fixed-dim": "#ffb596",
+                            "on-error-container": "#93000a",
+                            "on-primary-fixed": "#00174b",
+                            "surface-container": "#ededf9",
+                            "on-tertiary": "#ffffff",
+                            "inverse-surface": "#2e3039",
+                            "surface-variant": "#e1e2ed",
+                            "tertiary-container": "#bc4800",
+                            "tertiary-fixed": "#ffdbcd",
+                            "background": "#faf8ff",
+                            "surface-container-low": "#f3f3fe",
+                            "surface-container-highest": "#e1e2ed",
+                            "inverse-primary": "#b4c5ff",
+                            "on-tertiary-fixed-variant": "#7d2d00",
+                            "secondary-container": "#d0e1fb",
+                            "secondary": "#505f76",
+                            "on-error": "#ffffff",
+                            "surface": "#faf8ff",
+                            "surface-bright": "#faf8ff",
+                            "on-primary-container": "#eeefff",
+                            "secondary-fixed-dim": "#b7c8e1",
+                            "outline": "#737686",
+                            "on-primary-fixed-variant": "#003ea8",
+                            "error-container": "#ffdad6",
+                            "surface-dim": "#d9d9e5",
+                            "outline-variant": "#c3c6d7",
+                            "on-primary": "#ffffff",
+                            "primary-container": "#2563eb",
+                            "surface-container-high": "#e7e7f3",
+                            "on-background": "#191b23",
+                            "on-secondary": "#ffffff",
+                            "on-secondary-fixed": "#0b1c30",
+                            "primary": "#004ac6",
+                            "surface-tint": "#0053db",
+                            "inverse-on-surface": "#f0f0fb",
+                            "on-tertiary-container": "#ffede6",
+                            "on-secondary-container": "#54647a"
+                    },
+                    "borderRadius": {
+                            "DEFAULT": "0.25rem",
+                            "lg": "0.5rem",
+                            "xl": "0.75rem",
+                            "full": "9999px"
+                    },
+                    "spacing": {
+                            "grid-gutter": "20px",
+                            "stack-gap": "16px",
+                            "container-padding": "24px",
+                            "inline-element-gap": "8px"
+                    },
+                    "fontFamily": {
+                            "body-sm": ["Inter"],
+                            "mono-data": ["Inter"],
+                            "label-caps": ["Inter"],
+                            "headline-md": ["Inter"],
+                            "display-bold": ["Inter"],
+                            "body-base": ["Inter"]
+                    },
+                    "fontSize": {
+                            "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                            "mono-data": ["14px", {"lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "500"}],
+                            "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                            "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                            "display-bold": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                            "body-base": ["16px", {"lineHeight": "24px", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface font-body-base text-body-base text-on-surface min-h-screen">
+<!-- Top App Bar Shell -->
+<header class="flex justify-between items-center h-16 px-container-padding w-full lg:pl-[264px] docked full-width top-0 z-40 bg-surface dark:bg-surface-dim border-b border-outline-variant dark:border-outline flat no shadows">
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-low dark:hover:bg-surface-container-highest rounded-full p-2 lg:hidden">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+<h1 class="font-display-bold text-display-bold text-primary dark:text-primary-fixed-dim">Hostel Biometric</h1>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-high overflow-hidden">
+<img alt="Admin Avatar" class="w-full h-full object-cover" data-alt="A close up, high resolution portrait of a professional system administrator in a secure facility. The lighting is bright and clean, typical of a modern light-mode corporate environment. The background is a soft, out-of-focus white and grey. The image style is a photorealistic corporate headshot." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeVfEkZ5NFkQ1doddvqEJ9gU5AM7TsC1hNAHb8n7Qw4LRTMf1OdFeFRqGL2Q1oG7-hmj3tUUYrkPpY8oaSOX1iyPH1vfR3bGwP5yFeN5uPmLtJ7y8knCb0ccKlcJ_pJa4qCZUf1h2uD97ZoHri2giVEilUsCcZtXtk0LW6JAufvNOGrfioNoLH_3Ldm5-s-_1EeVq8dtl17xabyQnNc3ascI822quzYPHgF3xFbKVAhe1t4kZvKoz8eXZkJNQfsMatX7paZEYOig"/>
+</div>
+</div>
+</header>
+<!-- Side Navigation Shell (Web) -->
+<nav class="hidden lg:flex flex-col h-full w-[240px] fixed left-0 top-0 bg-surface dark:bg-surface-dim shadow-md shadow-md py-container-padding z-50 border-r border-outline-variant">
+<div class="px-6 pb-6 border-b border-surface-variant">
+<h2 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed-dim truncate">Hostel Biometric</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 truncate">Security Management</p>
+<span class="inline-block mt-2 font-label-caps text-label-caps text-on-surface-variant bg-surface-container px-2 py-0.5 rounded">v1.0.2</span>
+</div>
+<div class="flex-1 overflow-y-auto py-4">
+<a class="flex items-center gap-inline-element-gap text-on-surface-variant dark:text-outline-variant px-4 py-3 mx-2 hover:bg-surface-container-high dark:hover:bg-on-secondary-fixed-variant transition-colors rounded-xl" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-caps text-label-caps">Dashboard</span>
+</a>
+<a class="flex items-center gap-inline-element-gap text-on-surface-variant dark:text-outline-variant px-4 py-3 mx-2 hover:bg-surface-container-high dark:hover:bg-on-secondary-fixed-variant transition-colors rounded-xl" href="#">
+<span class="material-symbols-outlined">person_add</span>
+<span class="font-label-caps text-label-caps">Registration</span>
+</a>
+<a class="flex items-center gap-inline-element-gap text-on-surface-variant dark:text-outline-variant px-4 py-3 mx-2 hover:bg-surface-container-high dark:hover:bg-on-secondary-fixed-variant transition-colors rounded-xl" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-caps text-label-caps">Roster</span>
+</a>
+<a class="flex items-center gap-inline-element-gap text-on-surface-variant dark:text-outline-variant px-4 py-3 mx-2 hover:bg-surface-container-high dark:hover:bg-on-secondary-fixed-variant transition-colors rounded-xl" href="#">
+<span class="material-symbols-outlined">qr_code_scanner</span>
+<span class="font-label-caps text-label-caps">Gate Scan</span>
+</a>
+<a class="flex items-center gap-inline-element-gap bg-secondary-container dark:bg-on-secondary-fixed-variant text-on-secondary-container dark:text-secondary-fixed rounded-xl px-4 py-3 mx-2 hover:bg-surface-container-high dark:hover:bg-on-secondary-fixed-variant transition-colors scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-caps text-label-caps">Activity Logs</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="lg:ml-[240px] pt-4 px-4 sm:px-6 md:px-container-padding pb-24 lg:pb-8">
+<div class="max-w-4xl mx-auto mt-4">
+<!-- Page Header -->
+<div class="flex justify-between items-center mb-8">
+<div>
+<h1 class="font-headline-md text-headline-md text-on-surface">Recent Activity Logs</h1>
+</div>
+<button class="flex items-center justify-center w-10 h-10 rounded-full bg-surface-container-low hover:bg-surface-container-high text-primary transition-colors">
+<span class="material-symbols-outlined">refresh</span>
+</button>
+</div>
+<!-- Ledger Content -->
+<div class="space-y-6">
+<!-- Group -->
+<div>
+<h3 class="font-label-caps text-label-caps text-on-surface-variant mb-4 px-2 tracking-widest">TODAY — JULY 11</h3>
+<div class="flex flex-col gap-3">
+<!-- Log Item 1 -->
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-[#ecfdf5] border-2 border-[#10b981] flex-shrink-0">
+<img alt="Alex Mercer Profile" class="w-full h-full object-cover" data-alt="A clean, professional headshot of a young male student named Alex Mercer. The image is brightly lit with a white and pale green minimalist background, representing a secure system light mode interface profile picture. Photorealistic style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIxzPBiLXMXX0uD3-IWQHVUA7vEiSYsgyQE5IVxzwxr3U5xhZfoMqNS--lNRPz83z-WlLAwWJhB0dmyYQB7JealnpyXtpZ7fAfRcYrcpYkbi3u1MDc8jc6S_zaCAjwMGkMD_AwQsVokgL5mhqP2lgl0wXfZGZoVnKkiRoJ8I8-239lcD17xxttGpSiTCtFyUpXN7uWe_4AFq1Q3b4Z0_mMcGriPO-AXwD-VtqkiRC-pJvcIHOt9L8Nu6yz86IR0LipM8I_JVZtAg"/>
+</div>
+<div class="flex flex-col">
+<span class="font-body-base text-body-base text-on-surface font-medium">Alex Mercer</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Biometric Gate A</span>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="font-mono-data text-mono-data text-on-surface-variant">05:12 PM</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded font-label-caps text-label-caps bg-[#ecfdf5] text-[#047857]">CHECKED IN</span>
+</div>
+</div>
+<!-- Log Item 2 -->
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-[#fef2f2] border-2 border-[#ef4444] flex-shrink-0">
+<img alt="Priya Sharma Profile" class="w-full h-full object-cover" data-alt="A clean, professional headshot of a young female student named Priya Sharma. The image is brightly lit with a white and pale red minimalist background, representing a secure system light mode interface profile picture. Photorealistic style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzVKh2-c9hR_3kQc7EU9yZdWXutE33Mu920NDsrMtIxmC7WpmUuOoNtVHJp5BHvAu5uuWapif8Bb-lPL9N7SKd_QCqJJnzRtusu9cZwT9u4L-x4rZlKch49--Jk3jvTjqmc1hgG94L7AOQobwpHU4l6wRotDnGiP52ZqiAW6UTXeiCa7tpZB7BiqaMvLoKV_rXRPyPMqhHlpx4zG6pIUg6_is1cYJAIZfrqYqKLwjE0ZP1KiQFwg0UkmnEUBYzvBMIPk-ASgU-Bw"/>
+</div>
+<div class="flex flex-col">
+<span class="font-body-base text-body-base text-on-surface font-medium">Priya Sharma</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Biometric Gate B</span>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="font-mono-data text-mono-data text-on-surface-variant">04:45 PM</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded font-label-caps text-label-caps bg-[#fef2f2] text-[#b91c1c]">CHECKED OUT</span>
+</div>
+</div>
+<!-- Log Item 3 -->
+<div class="flex items-center justify-between p-4 bg-surface-container-lowest rounded-xl shadow-sm border border-surface-variant">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-[#ecfdf5] border-2 border-[#10b981] flex-shrink-0">
+<img alt="Vikram Singh Profile" class="w-full h-full object-cover" data-alt="A clean, professional headshot of a young male student named Vikram Singh. The image is brightly lit with a white and pale green minimalist background, representing a secure system light mode interface profile picture. Photorealistic style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuChSEtTrEeeMvCqQ5P4uCuZTbpQTLVP7-MVSBPLLHZSmuZayUzsFI1-LQU8XZFHcDFatcybFbR23rRJMOdQf5uINjIzNBpR8AmwB-sKXLhG8JmJzslw8bHISQ6eeYG_ut0g5hpvGjE5Gq_ArVUP3OPWyKKusTLgvYsueHH8FdEnP_GX1Ynf1I2284oBgTixf8c3pS9VFojRw2SEgSOKsPrJ0NSHtFLnXr7y4AF4UbFVvXpNbp979xIy1_HDAM6E-Ylf8qGBbbvrPA"/>
+</div>
+<div class="flex flex-col">
+<span class="font-body-base text-body-base text-on-surface font-medium">Vikram Singh</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">Biometric Gate A</span>
+</div>
+</div>
+<div class="flex flex-col items-end gap-1">
+<span class="font-mono-data text-mono-data text-on-surface-variant">03:15 PM</span>
+<span class="inline-flex items-center px-2 py-0.5 rounded font-label-caps text-label-caps bg-[#ecfdf5] text-[#047857]">CHECKED IN</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Bottom Nav Bar Shell (Mobile) -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-2 bg-surface dark:bg-surface-dim border-t border-outline-variant dark:border-outline shadow-sm z-50 lg:hidden docked full-width bottom-0 z-50 lg:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant py-1 hover:text-primary dark:hover:text-primary-fixed-dim" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-caps text-label-caps mt-1">Dash</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant py-1 hover:text-primary dark:hover:text-primary-fixed-dim" href="#">
+<span class="material-symbols-outlined">how_to_reg</span>
+<span class="font-label-caps text-label-caps mt-1">Reg</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant py-1 hover:text-primary dark:hover:text-primary-fixed-dim" href="#">
+<span class="material-symbols-outlined">document_scanner</span>
+<span class="font-label-caps text-label-caps mt-1">Scan</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-on-primary-fixed-variant text-on-primary-container dark:text-primary-fixed rounded-full px-5 py-1 hover:text-primary dark:hover:text-primary-fixed-dim scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined">list_alt</span>
+<span class="font-label-caps text-label-caps mt-1">Logs</span>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Guard Face Recognition</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#d3e4fe",
+                        "tertiary": "#943700",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "on-tertiary-fixed": "#360f00",
+                        "primary-fixed": "#dbe1ff",
+                        "on-surface": "#191b23",
+                        "on-surface-variant": "#434655",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#00174b",
+                        "surface-container": "#ededf9",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#2e3039",
+                        "surface-variant": "#e1e2ed",
+                        "tertiary-container": "#bc4800",
+                        "tertiary-fixed": "#ffdbcd",
+                        "background": "#faf8ff",
+                        "surface-container-low": "#f3f3fe",
+                        "surface-container-highest": "#e1e2ed",
+                        "inverse-primary": "#b4c5ff",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "secondary-container": "#d0e1fb",
+                        "secondary": "#505f76",
+                        "on-error": "#ffffff",
+                        "surface": "#faf8ff",
+                        "surface-bright": "#faf8ff",
+                        "on-primary-container": "#eeefff",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "outline": "#737686",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#d9d9e5",
+                        "outline-variant": "#c3c6d7",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#2563eb",
+                        "surface-container-high": "#e7e7f3",
+                        "on-background": "#191b23",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed": "#0b1c30",
+                        "primary": "#004ac6",
+                        "surface-tint": "#0053db",
+                        "inverse-on-surface": "#f0f0fb",
+                        "on-tertiary-container": "#ffede6",
+                        "on-secondary-container": "#54647a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "grid-gutter": "20px",
+                        "stack-gap": "16px",
+                        "container-padding": "24px",
+                        "inline-element-gap": "8px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "mono-data": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-bold": ["Inter"],
+                        "body-base": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "mono-data": ["14px", { "lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "display-bold": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-base": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .camera-mask {
+            mask-image: radial-gradient(ellipse 200px 250px at center, transparent 95%, black 100%);
+            -webkit-mask-image: -webkit-radial-gradient(ellipse 200px 250px at center, transparent 95%, black 100%);
+        }
+        
+        .scan-line {
+            animation: scan 2s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { top: 10%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 90%; opacity: 0; }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body-base h-full flex flex-col md:flex-row overflow-hidden select-none">
+<!-- Top Navigation (Web) -->
+<header class="hidden md:flex justify-between items-center h-16 px-container-padding w-full docked full-width top-0 z-40 bg-surface border-b border-outline-variant flat no shadows absolute">
+<div class="flex items-center gap-inline-element-gap">
+<button class="p-2 hover:bg-surface-container-low rounded-full transition-colors">
+<span class="material-symbols-outlined text-primary">menu</span>
+</button>
+<h1 class="font-display-bold text-display-bold text-primary font-bold">Hostel Biometric</h1>
+</div>
+<div class="flex items-center gap-stack-gap">
+<div class="text-right">
+<p class="font-body-base text-body-base font-medium">Main Gate Gatekeeper Port</p>
+</div>
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a security administrator in uniform, clear lighting, plain background. Professional corporate security aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-bG2qxwT_7M7aE4gDHx9r90W8wwcM3XG8iDr9o6DRIgB4u1rEJZjdvO63LpFNbOvHcOT-D4HE8P78pOXKnrb7CsrgCZyqkDWvGjW_D9zbwmmMp73PGE4UdufVkHPEHzgt4T8bRBqO8TfdoqpVzBr46TFLLH58CObI0MVICCz_H1VZW6q_Z_4l-meK9kUicrI1FpWKZTdN7SGzItjQNg8YYLKeaUwY8Uz7bWcpbZfOsW2cEs0iin2M_apxwnTx_PQ3ENXUrQ3aWQ"/>
+</div>
+</div>
+</header>
+<!-- Side Navigation (Web) -->
+<nav class="hidden md:flex flex-col h-full w-[240px] fixed left-0 top-0 pt-16 bg-surface shadow-md z-30">
+<div class="flex flex-col h-full py-container-padding px-2 gap-2 overflow-y-auto">
+<a class="flex items-center gap-inline-element-gap text-on-surface-variant px-4 py-3 mx-2 hover:bg-surface-container-high transition-colors rounded-xl" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-caps text-label-caps uppercase">Dashboard</span>
+</a>
+<a class="flex items-center gap-inline-element-gap text-on-surface-variant px-4 py-3 mx-2 hover:bg-surface-container-high transition-colors rounded-xl" href="#">
+<span class="material-symbols-outlined">person_add</span>
+<span class="font-label-caps text-label-caps uppercase">Registration</span>
+</a>
+<a class="flex items-center gap-inline-element-gap text-on-surface-variant px-4 py-3 mx-2 hover:bg-surface-container-high transition-colors rounded-xl" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-caps text-label-caps uppercase">Roster</span>
+</a>
+<a class="flex items-center gap-inline-element-gap bg-secondary-container text-on-secondary-container rounded-xl px-4 py-3 mx-2 scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">qr_code_scanner</span>
+<span class="font-label-caps text-label-caps uppercase font-bold">Gate Scan</span>
+</a>
+<a class="flex items-center gap-inline-element-gap text-on-surface-variant px-4 py-3 mx-2 hover:bg-surface-container-high transition-colors rounded-xl" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-caps text-label-caps uppercase">Activity Logs</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-1 h-full relative w-full md:pl-[240px] md:pt-16 bg-surface-container-lowest flex flex-col">
+<!-- Mobile Header (Visible only on mobile) -->
+<div class="md:hidden flex justify-between items-center p-4 bg-surface shadow-sm z-20">
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Hostel Biometric</h1>
+<p class="font-label-caps text-label-caps text-on-surface-variant uppercase mt-1">Main Gate Port</p>
+</div>
+<div class="w-10 h-10 rounded-full bg-secondary-container flex items-center justify-center overflow-hidden border border-outline-variant">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a security administrator in uniform, clear lighting, plain background. Professional corporate security aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBIlb87XrlcAnAR3sHUO0IGr1ziQ10xTbRa3505Qe5qOnCHAnXVnnZSel8rYNaAz11yR0o1ibXT8zTlvjbQJEHR307LZzINuYHSCJldZDBgum4el_TMtsTTgci-mVMq4_P6uBaLqVgjzpOhVySzlYkRLxrfvbR2zoxveA1QG1Wd56wDST95BqM6ohppQl1ulBrriHMyG6EN02yQ4Mp0BBSswcbEbbhahHiwGADqx6XN8IaP0JIeQle-fEOGxEIoo-pvhJnfouRA1w"/>
+</div>
+</div>
+<!-- Camera Viewport -->
+<div class="flex-1 relative bg-black overflow-hidden flex items-center justify-center">
+<!-- Simulated Camera Feed Background -->
+<div class="absolute inset-0 bg-cover bg-center w-full h-full opacity-80" data-alt="A slightly blurred, real-time security camera feed of an outdoor campus gate entrance during daytime. The scene is brightly lit with natural light, showing an empty walkway leading to a building. Corporate security aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCXmRlS9nfcurpjptQocOtGnhJZpFtqyC78GQpEV4aBujm86y_5qtIOnu0tmz-S_K2ZTHzax_w2dgkIgZjv94wuZXFuEC3P4Zzr8KaEcqp2m65upNx5anCLpXIfZbglHDanD9iEaaJ6G06iCCXkaHIUzzwEBkdRy4RfdMLq_TiZbGgI9FlN0OX8droTbUbQpy5J-v-ZREXTBsaCn6MHmiCGyuwI0fSE79Y4zm9r92QbVFj7HHKbR367e45qjOnaRKcTWKAtaj6axQ')"></div>
+<!-- Dark Overlay outside focus area -->
+<div class="absolute inset-0 bg-black/40 camera-mask pointer-events-none"></div>
+<!-- Focus Zone UI -->
+<div class="relative w-[300px] h-[400px] flex flex-col items-center justify-center pointer-events-none z-10">
+<!-- Instruction Banner -->
+<div class="absolute -top-16 bg-surface/90 backdrop-blur-sm px-6 py-3 rounded-full shadow-md flex items-center gap-2 border border-surface-variant">
+<span class="material-symbols-outlined text-primary">person</span>
+<span class="font-body-base text-body-base font-medium text-on-surface">Center face in oval</span>
+</div>
+<!-- Oval Guide (Idle/Ready State) -->
+<!-- Change border-green-500 to border-tertiary-container for processing state -->
+<div class="w-[280px] h-[350px] rounded-[100%] border-4 border-dashed border-[#10b981] opacity-80 transition-colors duration-300 relative" id="focus-ring">
+<!-- Scanning Line Effect -->
+<div class="hidden absolute left-0 right-0 h-1 bg-primary/80 shadow-[0_0_8px_2px_rgba(0,74,198,0.5)] scan-line rounded-full z-20" id="scan-laser"></div>
+</div>
+<!-- Processing Message (Hidden by default) -->
+<div class="hidden absolute -bottom-16 bg-tertiary-container text-on-tertiary px-6 py-2 rounded-full shadow-md flex items-center gap-2" id="processing-msg">
+<span class="material-symbols-outlined animate-spin">sync</span>
+<span class="font-mono-data text-mono-data">Verifying face...</span>
+</div>
+</div>
+<!-- Controls Area (Bottom overlay) -->
+<div class="absolute bottom-0 left-0 right-0 p-container-padding pb-[80px] md:pb-container-padding bg-gradient-to-t from-black/80 to-transparent flex justify-center items-end z-20">
+<!-- Action Button -->
+<button class="bg-primary hover:bg-primary-fixed-variant text-on-primary font-headline-md text-headline-md font-bold py-4 px-12 rounded-full shadow-lg flex items-center gap-3 transition-all active:scale-95 disabled:bg-surface-variant disabled:text-outline disabled:scale-100 disabled:shadow-none" id="scan-btn" onclick="simulateScan()">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">document_scanner</span>
+<span>SCAN FACE</span>
+</button>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation (Mobile) -->
+<nav class="lg:hidden fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-2 bg-surface border-t border-outline-variant shadow-sm z-50">
+<a class="flex flex-col items-center justify-center text-on-surface-variant py-1" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-caps text-label-caps uppercase mt-1">Dash</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant py-1" href="#">
+<span class="material-symbols-outlined">how_to_reg</span>
+<span class="font-label-caps text-label-caps uppercase mt-1">Reg</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-5 py-1 scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">document_scanner</span>
+<span class="font-label-caps text-label-caps uppercase mt-1 font-bold">Scan</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant py-1" href="#">
+<span class="material-symbols-outlined">list_alt</span>
+<span class="font-label-caps text-label-caps uppercase mt-1">Logs</span>
+</a>
+</nav>
+<script>
+        function simulateScan() {
+            const btn = document.getElementById('scan-btn');
+            const ring = document.getElementById('focus-ring');
+            const msg = document.getElementById('processing-msg');
+            const laser = document.getElementById('scan-laser');
+            
+            // Set Processing State
+            btn.disabled = true;
+            btn.innerHTML = `<span class="material-symbols-outlined text-[28px]">lock_clock</span><span>VERIFYING...</span>`;
+            
+            ring.classList.remove('border-[#10b981]', 'border-dashed');
+            ring.classList.add('border-tertiary-container', 'border-solid');
+            
+            msg.classList.remove('hidden');
+            laser.classList.remove('hidden');
+
+            // Reset after simulation
+            setTimeout(() => {
+                btn.disabled = false;
+                btn.innerHTML = `<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">document_scanner</span><span>SCAN FACE</span>`;
+                
+                ring.classList.add('border-[#10b981]', 'border-dashed');
+                ring.classList.remove('border-tertiary-container', 'border-solid');
+                
+                msg.classList.add('hidden');
+                laser.classList.add('hidden');
+            }, 3000);
+        }
+    </script>
+</body></html>

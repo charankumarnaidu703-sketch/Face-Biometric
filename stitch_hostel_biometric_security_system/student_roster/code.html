@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Hostel Biometric - Roster</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#d3e4fe",
+                        "tertiary": "#943700",
+                        "error": "#ba1a1a",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed-variant": "#38485d",
+                        "on-tertiary-fixed": "#360f00",
+                        "primary-fixed": "#dbe1ff",
+                        "on-surface": "#191b23",
+                        "on-surface-variant": "#434655",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "tertiary-fixed-dim": "#ffb596",
+                        "on-error-container": "#93000a",
+                        "on-primary-fixed": "#00174b",
+                        "surface-container": "#ededf9",
+                        "on-tertiary": "#ffffff",
+                        "inverse-surface": "#2e3039",
+                        "surface-variant": "#e1e2ed",
+                        "tertiary-container": "#bc4800",
+                        "tertiary-fixed": "#ffdbcd",
+                        "background": "#faf8ff",
+                        "surface-container-low": "#f3f3fe",
+                        "surface-container-highest": "#e1e2ed",
+                        "inverse-primary": "#b4c5ff",
+                        "on-tertiary-fixed-variant": "#7d2d00",
+                        "secondary-container": "#d0e1fb",
+                        "secondary": "#505f76",
+                        "on-error": "#ffffff",
+                        "surface": "#faf8ff",
+                        "surface-bright": "#faf8ff",
+                        "on-primary-container": "#eeefff",
+                        "secondary-fixed-dim": "#b7c8e1",
+                        "outline": "#737686",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "error-container": "#ffdad6",
+                        "surface-dim": "#d9d9e5",
+                        "outline-variant": "#c3c6d7",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#2563eb",
+                        "surface-container-high": "#e7e7f3",
+                        "on-background": "#191b23",
+                        "on-secondary": "#ffffff",
+                        "on-secondary-fixed": "#0b1c30",
+                        "primary": "#004ac6",
+                        "surface-tint": "#0053db",
+                        "inverse-on-surface": "#f0f0fb",
+                        "on-tertiary-container": "#ffede6",
+                        "on-secondary-container": "#54647a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "grid-gutter": "20px",
+                        "stack-gap": "16px",
+                        "container-padding": "24px",
+                        "inline-element-gap": "8px"
+                    },
+                    "fontFamily": {
+                        "body-sm": ["Inter"],
+                        "mono-data": ["Inter"],
+                        "label-caps": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-bold": ["Inter"],
+                        "body-base": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "mono-data": ["14px", { "lineHeight": "20px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "display-bold": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-base": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface-container-low min-h-screen text-on-surface flex flex-col md:flex-row">
+<!-- NavigationDrawer (Desktop) -->
+<aside class="h-full w-[240px] fixed left-0 top-0 bg-surface shadow-md hidden md:flex flex-col py-container-padding z-50">
+<div class="px-6 mb-8 flex items-center gap-4">
+<img alt="Admin User Profile" class="w-10 h-10 rounded-full object-cover shadow-sm" data-alt="A clean, minimalist 3D rendering of a secure biometric fingerprint or retina scanner icon, presented in crisp white and deep blue tones, reflecting a highly professional, light-mode corporate security dashboard aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAbTz8cL8J57QOe_4aN8kw6pU-Uo3YiCGSpQ9KmAj6tXX1mXYFcxwqevAAhneA-ufuLAXAEeSFM8s4kojZvLpD7QJmUJRL0AOTvIebA1qmgGm4gt2sDvpauYIACNWUzgQPUMttn2UgVHTVHb779VCj1A0FNcpUbv3i4nKAMqLNwjwcpi1IxEaMJkLdHZ9vBhmR-3vevBR6-VFp6VFdwzQLVvGcyUi4LCQhPqMqWkWSX-g-LBsyvT4Mpd4ciUW6UP0fMa2pBZIHXfA"/>
+<div>
+<h1 class="font-display-bold text-display-bold text-primary text-[18px] leading-tight">Hostel Biometric</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Security Management</p>
+<p class="font-label-caps text-label-caps text-outline mt-1">v1.0.2</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Inactive -->
+<a class="flex items-center gap-inline-element-gap text-on-surface-variant px-4 py-3 mx-2 rounded-xl hover:bg-surface-container-high transition-colors font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-inline-element-gap text-on-surface-variant px-4 py-3 mx-2 rounded-xl hover:bg-surface-container-high transition-colors font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">person_add</span>
+                Registration
+            </a>
+<!-- Active -->
+<a class="flex items-center gap-inline-element-gap bg-secondary-container text-on-secondary-container rounded-xl px-4 py-3 mx-2 hover:bg-surface-container-high transition-colors scale-95 duration-150 font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">group</span>
+                Roster
+            </a>
+<a class="flex items-center gap-inline-element-gap text-on-surface-variant px-4 py-3 mx-2 rounded-xl hover:bg-surface-container-high transition-colors font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">qr_code_scanner</span>
+                Gate Scan
+            </a>
+<a class="flex items-center gap-inline-element-gap text-on-surface-variant px-4 py-3 mx-2 rounded-xl hover:bg-surface-container-high transition-colors font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined">history</span>
+                Activity Logs
+            </a>
+</nav>
+</aside>
+<!-- TopAppBar -->
+<header class="docked full-width top-0 z-40 bg-surface border-b border-outline-variant flex justify-between items-center h-16 px-container-padding w-full md:pl-[264px] fixed">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-on-surface-variant hover:bg-surface-container-low rounded-full p-2 transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h2 class="font-headline-md text-headline-md text-primary font-bold">Roster</h2>
+</div>
+<div class="flex items-center">
+<img alt="Admin Avatar" class="w-8 h-8 rounded-full border border-outline-variant object-cover" data-alt="A sharp, minimalist circular avatar placeholder showing a stylized silhouette of a security administrator in high-contrast light slate grey and deep blue, fitting perfectly within a professional administrative dashboard interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVomVYgup_i5kulIP3So80gP6vzZXyXWpnLajNycXhX9AbZx4Fj2172gk-XgwSiMcMs6Xzs7rOcKsRrUsDBghJRRna8C95MespF-2fT5vMM82ZRc6U_YUbDS4T5bPt7knpG2RvmY42UauPLz65W0GzTQCW1DBrh2Bar0JRxjzCYk_yvHQqojE9KC4gvOaiw71BULYG1-5TWOe5Cve2TwWZi54Uujdh42m9_Q4hUVDFJsbTeRIO2WaxIYnElUCqOH4QbTn851YbXA"/>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 pt-16 md:pl-[240px] pb-24 md:pb-8 flex flex-col w-full">
+<!-- Sticky Search Area -->
+<div class="sticky top-16 z-30 bg-surface-container-low/90 backdrop-blur-md px-container-padding py-6 border-b border-surface-dim">
+<div class="max-w-4xl mx-auto flex flex-col sm:flex-row gap-4 items-center">
+<div class="relative flex-1 w-full shadow-sm rounded-xl">
+<span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-xl pl-12 pr-12 py-3 font-body-base text-body-base text-on-surface focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all" placeholder="Search by name, ID, or room..." type="text"/>
+<button class="absolute right-4 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+</div>
+<div class="max-w-4xl mx-auto mt-4 px-1">
+<p class="font-body-sm text-body-sm text-on-surface-variant font-medium">Showing 482 students total</p>
+</div>
+</div>
+<!-- Roster Grid -->
+<div class="px-container-padding py-8 max-w-7xl mx-auto w-full">
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-grid-gutter">
+<!-- Card 1: Alex Mercer -->
+<div class="bg-surface-container-lowest rounded-[14px] shadow-sm p-5 border border-surface-variant hover:shadow-md transition-shadow relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-[100px] -z-10 group-hover:scale-110 transition-transform"></div>
+<div class="flex gap-4 items-start mb-4">
+<img alt="Alex Mercer" class="w-14 h-14 rounded-full object-cover shadow-sm border border-outline-variant" data-alt="A high-quality, professional headshot of a young male student, Alex Mercer, standing in a brightly lit modern university campus hallway. The lighting is soft and natural, emphasizing a clean, light-mode corporate minimalist aesthetic. He wears casual smart clothing. The background features subtle architectural lines in slate grey and white, reinforcing a secure and stable environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA4Ab3654ziU9OOF-dD0yVlis_X8URXRVPQAWCgnN4hbr0lb_3Q98hC_vWwjOY41TJp11XqsvvARkNvAwQAtkFimTnPYLxH47Hb4zjMPEZHrEAdtknHYrxbKp150tcyHtAeQpYB9ikPO4WRSl9Eh1eqlg1mSAGdhxgJeRfX4KI0j-SL3sx3Qf5BYLRdAS1JcogqcOTDsTJ7-GrSfudUHiTJk6Dt3yDV-ug9FW5JvOKDK2BZOTkINfQpGzW4s2qNwt_isZZiWQaetQ"/>
+<div class="flex-1">
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface leading-tight">Alex Mercer</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">ID: STU-84920</p>
+</div>
+<!-- Enrolled Badge (Custom styling to match strict requirement while using theme logic where possible) -->
+<span class="px-3 py-1 bg-[#ecfdf5] text-[#047857] font-label-caps text-label-caps rounded-full border border-[#a7f3d0]">ENROLLED</span>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-surface-variant">
+<div>
+<p class="font-label-caps text-label-caps text-outline mb-1">ROOM</p>
+<p class="font-mono-data text-mono-data text-on-surface">Block A - 204</p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-outline mb-1">LAST SCAN</p>
+<p class="font-mono-data text-mono-data text-on-surface">Today, 08:14 AM</p>
+</div>
+</div>
+</div>
+<!-- Card 2: Jane Doe (Pending Scan - Red badge) -->
+<div class="bg-surface-container-lowest rounded-[14px] shadow-sm p-5 border border-error-container hover:shadow-md transition-shadow relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-24 h-24 bg-error/5 rounded-bl-[100px] -z-10 group-hover:scale-110 transition-transform"></div>
+<div class="flex gap-4 items-start mb-4">
+<img alt="Jane Doe" class="w-14 h-14 rounded-full object-cover shadow-sm border border-outline-variant" data-alt="A high-quality, professional headshot of a young female student, Jane Doe, taken indoors against a clean, uncluttered white wall. The illumination is bright and even, casting minimal shadows to maintain a pristine, clinical light-mode aesthetic. She looks directly at the camera with a neutral, calm expression. The overall mood conveys trust and administrative efficiency." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBDWPULEZHX1gBojRe4z26MgZIPf0tcAnICKSFeyr6_7HkYOs9VonvNJsb2GST0bUM-FFqea-_dUMAgXCag1UBxsxwZCpRKPYEbA-VQ6wboDKxOI6zIETR2n3--fotYCNS3S0A4t6zHBGo3DxG4adSH_QrkEIhyIXktsGWQRQmlOPRia4CiimtoZz8fRc3-kNJcUIzGHtwVPFC9vR8piECfD6doofG52ZtVHPd584MHfJg6_XYMqJI_T7Yf0izxo21zOH-y6AoAhg"/>
+<div class="flex-1">
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface leading-tight">Jane Doe</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">ID: STU-84921</p>
+</div>
+<span class="px-3 py-1 bg-error-container text-on-error-container font-label-caps text-label-caps rounded-full border border-error/20">PENDING SCAN</span>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-surface-variant">
+<div>
+<p class="font-label-caps text-label-caps text-outline mb-1">ROOM</p>
+<p class="font-mono-data text-mono-data text-on-surface">Block B - 110</p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-error mb-1">ACTION REQUIRED</p>
+<p class="font-mono-data text-mono-data text-on-surface">Biometric Setup</p>
+</div>
+</div>
+</div>
+<!-- Card 3: Vikram Singh -->
+<div class="bg-surface-container-lowest rounded-[14px] shadow-sm p-5 border border-surface-variant hover:shadow-md transition-shadow relative overflow-hidden group">
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-[100px] -z-10 group-hover:scale-110 transition-transform"></div>
+<div class="flex gap-4 items-start mb-4">
+<img alt="Vikram Singh" class="w-14 h-14 rounded-full object-cover shadow-sm border border-outline-variant" data-alt="A high-quality, professional headshot of a young male student, Vikram Singh, positioned in a modern library or study area. Bright, diffused daylight filters through large windows, creating a serene and focused atmosphere consistent with a minimalist corporate design. The color palette relies heavily on crisp whites, slate greys, and deep blues. He projects confidence and academic readiness." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVcxXUZuVeFJ0DQkk0FjSj6DOyLDW6ejm-N7csDtajRZGAz4vXaeaN4f0WwT5jiUpz-Mxof_FQ8iKB6SFThzGCZgre4Ilx6Hfvi6_9Y0duKc65yKQ7g8AbfLTs7Mz3j1MpHCKIRn4DMCXCjL3BQL1xDb6_vf_kcLjze7imUXt777DWLDNXWFU1dWfJCEMQZ9JZ8N8f8A38JT69oXcZYRiVNtqmCqqaNGFj0JrHNJkX4HMNYxQZBv8zH7yhRaTkqTFsfXhc-2pZkg"/>
+<div class="flex-1">
+<h3 class="font-headline-md text-headline-md font-bold text-on-surface leading-tight">Vikram Singh</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">ID: STU-84922</p>
+</div>
+<span class="px-3 py-1 bg-[#ecfdf5] text-[#047857] font-label-caps text-label-caps rounded-full border border-[#a7f3d0]">ENROLLED</span>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-surface-variant">
+<div>
+<p class="font-label-caps text-label-caps text-outline mb-1">ROOM</p>
+<p class="font-mono-data text-mono-data text-on-surface">Block C - 305</p>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-outline mb-1">LAST SCAN</p>
+<p class="font-mono-data text-mono-data text-on-surface">Yesterday, 10:45 PM</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Pagination -->
+<div class="mt-12 flex justify-center">
+<button class="bg-surface-container-lowest border border-outline-variant text-on-surface px-8 py-3 rounded-[12px] font-label-caps text-label-caps shadow-sm hover:bg-surface-container-low hover:border-outline transition-all flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">sync</span>
+                    LOAD MORE
+                </button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 py-2 bg-surface border-t border-outline-variant z-50 md:hidden shadow-sm">
+<a class="flex flex-col items-center justify-center text-on-surface-variant py-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-caps text-label-caps mt-1 text-[10px]">Dash</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-full px-5 py-1 scale-90 transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">how_to_reg</span>
+<span class="font-label-caps text-label-caps mt-1 text-[10px]">Reg</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant py-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">document_scanner</span>
+<span class="font-label-caps text-label-caps mt-1 text-[10px]">Scan</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant py-1 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">list_alt</span>
+<span class="font-label-caps text-label-caps mt-1 text-[10px]">Logs</span>
+</a>
+</nav>
+</body></html>
