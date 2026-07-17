@@ -176,7 +176,11 @@ export default function GuardScanScreen({ navigation }) {
                 { color: isMatched ? '#16A34A' : '#DC2626' },
               ]}
             >
-              {isMatched ? 'Student Identified' : 'No Match Found'}
+              {isMatched ? 'Student Identified' : 
+                scanResult.reason === 'NO_FACE_IN_FRAME' ? 'No Face Detected' :
+                scanResult.reason === 'NO_STUDENTS_ENROLLED' ? 'No Students Enrolled' :
+                scanResult.reason === 'LOW_CONFIDENCE' ? 'Low Confidence' :
+                'No Match Found'}
             </Text>
 
             {/* Details */}
@@ -246,6 +250,10 @@ export default function GuardScanScreen({ navigation }) {
                 <Text style={styles.noMatchText}>
                   {scanResult.reason === 'NO_STUDENTS_ENROLLED'
                     ? 'No students have been enrolled yet. Ask the administrator to enroll student faces first.'
+                    : scanResult.reason === 'NO_FACE_IN_FRAME'
+                    ? 'No face was detected in the camera frame. Make sure the student is looking at the camera with their face inside the oval guide.'
+                    : scanResult.reason === 'LOW_CONFIDENCE'
+                    ? `A potential match was found but the confidence was too low (${scanResult.confidence?.toFixed(1) || '?'}%). Please try scanning again with better lighting.`
                     : 'The scanned face did not match any enrolled student. Please try again or ask the student to re-enroll.'}
                 </Text>
               </View>

@@ -83,15 +83,55 @@ async def enroll_face(payload: EnrollRequest, current_user: dict = Depends(get_c
 @router.post("/identify")
 async def identify_face(payload: IdentifyRequest, current_user: dict = Depends(get_current_user)):
     """
-    Match a live camera feed frame (base64) against all students enrolled under the given admin.
+    Match a live camera feed frame (base64) against all students enrolled in the same college.
+    Both admins and guards from the same college can identify the same set of students.
     Returns details of the student and predicts the next action (IN -> OUT, OUT -> IN).
     """
-    # Query database for all face embeddings matching the admin's students
-    # Using PostgREST inner join syntax to filter by students.user_id
+    # Step 1: Look up the calling user's college to find ALL users in the same institution
+    try:
+        caller = supabase.table("users").select("college_name").eq("id", payload.admin_user_id).execute()
+        if not caller.data:
+            raise HTTPException(status_code=404, detail="Calling user not found in database.")
+        
+        college_name = caller.data[0].get("college_name")
+        
+        # Find all user_ids (admin + guard) belonging to this college
+        college_users = supabase.table("users").select("id").eq("college_name", college_name).execute()
+        college_user_ids = [u["id"] for u in college_users.data] if college_users.data else []
+        
+        if not college_user_ids:
+            return {"matched": False, "reason": "NO_STUDENTS_ENROLLED"}
+        
+        logger.info(f"Identify request from user in college '{college_name}', searching across {len(college_user_ids)} college users")
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Error looking up college users: {e}")
+        raise HTTPException(status_code=500, detail="Failed to look up college information.")
+
+    # Step 2: Get all student IDs registered by any user in this college
+    try:
+        students_data = supabase.table("students")\
+            .select("id")\
+            .in_("user_id", college_user_ids)\
+            .eq("is_enrolled", True)\
+            .execute()
+        
+        student_ids = [s["id"] for s in students_data.data] if students_data.data else []
+        
+        if not student_ids:
+            return {"matched": False, "reason": "NO_STUDENTS_ENROLLED"}
+        
+        logger.info(f"Found {len(student_ids)} enrolled students in college '{college_name}'")
+    except Exception as e:
+        logger.error(f"Error fetching students: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch student list from database.")
+
+    # Step 3: Query face embeddings for those students
     try:
         embeddings_data = supabase.table("face_embeddings")\
-            .select("student_id, embedding, students!inner(user_id)")\
-            .eq("students.user_id", payload.admin_user_id)\
+            .select("student_id, embedding")\
+            .in_("student_id", student_ids)\
             .execute()
     except Exception as e:
         logger.error(f"Error fetching face database: {e}")
