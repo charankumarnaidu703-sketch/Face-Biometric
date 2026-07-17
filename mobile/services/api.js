@@ -5,7 +5,7 @@ import useStore from '../store/useStore';
 // For emulator testing, 'http://10.0.2.2:8000' (Android) or 'http://localhost:8000' (iOS) works.
 // For production, paste your Railway/AppHosting backend URL.
 // Current: Localtunnel public URL (tunnels to localhost:8000 on your Mac)
-export const API_URL = 'https://eager-seals-kneel.loca.lt';
+export const API_URL = 'https://hostel-biometric-charan.loca.lt';
 
 const api = axios.create({ 
   baseURL: API_URL,

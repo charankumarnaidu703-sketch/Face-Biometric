@@ -184,10 +184,10 @@ Since mobile phones (including the Android APK) cannot access `localhost:8000` d
 
 1. Open a **new terminal tab** and run:
    ```bash
-   npx localtunnel --port 8000
+   npx localtunnel --port 8000 --subdomain hostel-biometric-charan
    ```
-2. Copy the generated URL (e.g., `https://eager-seals-kneel.loca.lt`).
-3. Keep this terminal running. If the tunnel disconnects, simply re-run the command to get a new URL.
+2. The URL will always be: **`https://hostel-biometric-charan.loca.lt`**.
+3. Keep this terminal running. If the tunnel disconnects, simply re-run the command above to bring it back online.
 
 ---
 

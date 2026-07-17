@@ -236,14 +236,14 @@ This file tracks the step-by-step progress of the **Hostel Biometric** project. 
 ---
 
 ## 🛠️ Step 30 Details
-* **Work Completed**: Backend deployed locally via Localtunnel (`npx localtunnel --port 8000`). Backend FastAPI server runs on `localhost:8000` and is exposed as a public HTTPS URL (`https://eager-seals-kneel.loca.lt`). This approach was chosen because: (1) Google Cloud requires ₹1,000 prepayment blocking the free trial, (2) Render free-tier OOMs on dlib compilation (~2-4 GB RAM needed).
+* **Work Completed**: Backend deployed locally via Localtunnel with a fixed subdomain (`npx localtunnel --port 8000 --subdomain hostel-biometric-charan`). Backend FastAPI server runs on `localhost:8000` and is exposed as a permanent public HTTPS URL (`https://hostel-biometric-charan.loca.lt`).
 * **Skills Used**: Localtunnel networking, FastAPI server management, port conflict resolution.
 * **AI Confidence Score for Step 30**: 100%
 
 ---
 
 ## 🛠️ Step 31 Details
-* **Work Completed**: Updated `mobile/services/api.js` to point to the live Localtunnel URL (`https://eager-seals-kneel.loca.lt`). Added `Bypass-Tunnel-Reminder: true` header to axios config to skip Localtunnel's interstitial page. Increased API timeout from 10s to 30s to account for network latency over tunnel.
+* **Work Completed**: Updated `mobile/services/api.js` to point to the permanent Localtunnel URL (`https://hostel-biometric-charan.loca.lt`). Added `Bypass-Tunnel-Reminder: true` header to axios config to skip Localtunnel's interstitial page.
 * **Skills Used**: Axios HTTP client configuration, Localtunnel header bypass.
 * **AI Confidence Score for Step 31**: 100%
 
