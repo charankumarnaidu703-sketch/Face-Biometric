@@ -449,8 +449,66 @@ Welcome to the **Hostel Biometric** learning log! This document will help you un
 * **Common Mistakes to Avoid**:
   - Trying to deploy heavy AI libraries to Serverless platforms like Vercel. Serverless size limits (typically 50MB) and build environment restrictions prevent native C++ compilation, leading to deployment failures.
 
+### Step 33: Write Your README & Git Setup
+* **What was done**: Created [README.md](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/README.md) and [.gitignore](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/.gitignore) files in the project root, initialized a git repository, and staged/committed the entire codebase.
+* **Why**:
+  - A professional README serves as the project's documentation blueprint, enabling developers to configure databases, deploy backend servers, and run client applications with zero friction.
+  - Initializing git tracks source revisions, while `.gitignore` ensures node_modules, python virtual environments, and secret environment files (like `.env`) are kept out of shared code repositories to prevent data leaks.
+* **Concepts Used**:
+  - *Project Documentation Engineering*: Laying out architectural structure, environment dependencies, database schema DDL queries, and user guide sections.
+  - *Git Staging & Ignore Rules*: Pre-filtering binary files and build caches from the code index.
+* **Best Practices**:
+  - Document all database table schema creation DDL queries so developers don't have to guess row structures or datatypes.
+  - Never commit credentials. Keep `.env` and `venv` explicitly in `.gitignore` to prevent database access leaks.
+* **Common Mistakes to Avoid**:
+  - Committing unnecessary caches (like `__pycache__` or `.expo/`). This makes repository clone sizes unnecessarily large and can cause dependency caching conflicts in remote build environments.
 
+### Step 30: Deploy Backend via Localtunnel
+* **What was done**: Ran the FastAPI backend locally (`uvicorn main:app --host 0.0.0.0 --port 8000`) and exposed it as a public HTTPS URL using Localtunnel (`npx localtunnel --port 8000`).
+* **Why**:
+  - Cloud platforms (Google Cloud, Render, Railway) either require billing or have resource limits too small for `dlib` compilation (~2-4 GB RAM). Localtunnel provides a **free, zero-config** tunnel for development/demo purposes.
+* **Concepts Used**:
+  - *Port Forwarding / Tunneling*: Localtunnel creates a reverse proxy that routes traffic from a public URL (e.g., `https://old-taxes-yell.loca.lt`) to your local `localhost:8000`.
+  - *Address Binding*: Using `--host 0.0.0.0` makes the server listen on all network interfaces, not just `127.0.0.1`, allowing the tunnel to reach it.
+* **How It Works**: Your Mac runs the Python server → Localtunnel opens a WebSocket to its cloud relay → External requests hit the tunnel URL → Relay forwards them to your Mac → FastAPI processes and responds.
+* **Best Practices**:
+  - Always use `--host 0.0.0.0` when exposing via tunnel, otherwise the tunnel can't reach the server.
+  - Add `Bypass-Tunnel-Reminder: true` header to API clients to skip Localtunnel's interstitial HTML page.
+* **Common Mistakes to Avoid**:
+  - Forgetting to restart the tunnel after laptop sleep/reboot — each restart generates a **new URL** that must be updated in the mobile app.
+  - Running `lsof -i :8000` to check if a port is already in use before starting the server, otherwise you'll get `[Errno 48] address already in use`.
 
+### Step 31: Update Mobile App to Use Live URL
+* **What was done**: Updated `mobile/services/api.js` to point to the Localtunnel URL. Added `Bypass-Tunnel-Reminder` header and increased timeout to 30 seconds.
+* **Why**: The mobile app needs to know the backend's address. Over a tunnel, requests travel through the internet and back, adding latency compared to localhost.
+* **Concepts Used**:
+  - *Axios Instance Configuration*: Using `axios.create()` to set `baseURL`, `timeout`, and default `headers` centrally — all API calls inherit these settings.
+  - *Request Interceptors*: Automatically inject the JWT token into every request's `Authorization` header.
+* **Best Practices**:
+  - Use environment variables or a config file for the API URL so it's easy to switch between development (localhost), tunnel, and production URLs.
+  - Set generous timeouts (30s+) for AI/face recognition endpoints that involve heavy computation.
+
+### Step 32: Generate Standalone Android APK
+* **What was done**: Installed JDK 17, ran `npx expo prebuild --platform android --clean` to generate the native Android project, then built the APK with `./gradlew assembleRelease`.
+* **Why**: A standalone APK is needed to install and test the app on a real Android device without requiring Expo Go.
+* **Concepts Used**:
+  - *Continuous Native Generation (CNG)*: Expo's `prebuild` command generates a full native Android project (Gradle, Java, AndroidManifest.xml) from your JavaScript/React Native code. The `android/` directory is disposable — regenerate it anytime from `app.json`.
+  - *Gradle Build System*: Android's official build tool. `assembleRelease` compiles all Java/Kotlin source code, links native C++ libraries (NDK), bundles JavaScript (Metro Bundler + Hermes), and packages everything into a single `.apk`.
+  - *JDK 17*: The Java Development Kit required by Android Gradle Plugin. React Native requires **exactly JDK 17** — not 8, 11, or 21.
+  - *Hermes Engine*: A JavaScript engine optimized for React Native. The build bundles your JS code into Hermes bytecode (`.hbc`), making the app start faster than JSC (JavaScriptCore).
+* **Important Technical Details**:
+  - **APK Location**: `mobile/android/app/build/outputs/apk/release/app-release.apk` (116 MB)
+  - **Required Environment Variables**: `JAVA_HOME` (JDK 17 path) and `ANDROID_HOME` (Android SDK path)
+  - **Build Architectures**: `armeabi-v7a, arm64-v8a, x86, x86_64` — supports virtually all Android devices
+  - **compileSdk: 36, targetSdk: 36, minSdk: 24** — supports Android 7.0 (Nougat) and above
+* **Best Practices**:
+  - Use `--clean` flag with prebuild to avoid stale native configuration from previous builds.
+  - Keep `mobile/android/` in `.gitignore` since it's generated code — regenerate it with `expo prebuild` whenever needed.
+  - For production, sign the APK with a keystore. The current build is unsigned (debug-signed).
+* **Common Mistakes to Avoid**:
+  - Building on restricted networks (college WiFi) that do SSL inspection — Gradle can't download dependencies. Use mobile hotspot instead.
+  - Using the wrong JDK version. JDK 17 is mandatory for current React Native/Android builds.
+  - Not setting `JAVA_HOME` and `ANDROID_HOME` before running Gradle commands.
 
 
 

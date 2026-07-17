@@ -38,3 +38,6 @@ mobile/ios/
 *.apk
 *.aab
 *.ipa
+
+# Google Cloud SDK local config (contains credentials)
+.gcloud_config/

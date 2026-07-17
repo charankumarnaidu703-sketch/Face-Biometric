@@ -18,6 +18,8 @@ Currently, the workspace is in the initial setup phase. The full structure will 
 * **[hostel_biometric_build_plan_v2.md](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/hostel_biometric_build_plan_v2.md)**: The comprehensive 33-step master build plan.
 * **[GEMINI.md](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/GEMINI.md)**: Project instructions regarding required documentation files.
 * **[frontend design prompts.md](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/frontend%20design%20prompts.md)**: Structured system prompts for generating high-fidelity mobile designs using the RSCIT framework.
+* **[README.md](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/README.md)**: Main developer and user guide containing architecture details, deployment commands, and setup instructions.
+* **[.gitignore](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/.gitignore)**: Git configuration to exclude temporary files, virtual environments, node modules, and secrets.
 
 ### Current Directory Structure
 The project is organized into two main parts:
