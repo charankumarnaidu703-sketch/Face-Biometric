@@ -232,26 +232,27 @@ export default function RegisterStudentScreen({ navigation }) {
               </Text>
             </View>
           </View>
+
+          {/* Continue to Face Scan CTA Button (Inside ScrollView to prevent keyboard overlap) */}
+          <View style={styles.footerCTA}>
+            <TouchableOpacity
+              style={[styles.ctaButton, loading && styles.ctaButtonDisabled]}
+              onPress={handleSubmit}
+              disabled={loading}
+              activeOpacity={0.9}
+            >
+              {loading ? (
+                <ActivityIndicator color="#FFFFFF" size="small" />
+              ) : (
+                <Text style={styles.ctaButtonText}>
+                  Continue to Face Scan  ➔
+                </Text>
+              )}
+            </TouchableOpacity>
+          </View>
         </ScrollView>
       </KeyboardAvoidingView>
 
-      {/* Continue to Face Scan CTA Footer */}
-      <View style={styles.footerCTA}>
-        <TouchableOpacity
-          style={[styles.ctaButton, loading && styles.ctaButtonDisabled]}
-          onPress={handleSubmit}
-          disabled={loading}
-          activeOpacity={0.9}
-        >
-          {loading ? (
-            <ActivityIndicator color="#FFFFFF" size="small" />
-          ) : (
-            <Text style={styles.ctaButtonText}>
-              Continue to Face Scan  ➔
-            </Text>
-          )}
-        </TouchableOpacity>
-      </View>
 
       {/* Year Picker Modal */}
       <Modal
@@ -330,7 +331,7 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 24,
-    paddingBottom: 100, // Safe padding for bottom CTA
+    paddingBottom: 24,
   },
 
   // --- Form Card ---
@@ -451,14 +452,8 @@ const styles = StyleSheet.create({
 
   // --- Fixed CTA Footer ---
   footerCTA: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderColor: '#E7E7F3',
-    padding: 16,
+    marginTop: 8,
+    paddingBottom: 16,
   },
   ctaButton: {
     height: 52,
