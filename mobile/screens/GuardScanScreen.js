@@ -12,6 +12,7 @@ import {
   Dimensions,
   Modal,
   Image,
+  Platform,
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import Svg, { Ellipse } from 'react-native-svg';
@@ -29,7 +30,13 @@ const OVAL_RY = SCREEN_WIDTH * 0.46;
 export default function GuardScanScreen({ navigation }) {
   const cameraRef = useRef(null);
   const user = useStore((s) => s.user);
+  const logout = useStore((s) => s.logout);
   const [permission, requestPermission] = useCameraPermissions();
+
+  const handleLogout = async () => {
+    await logout();
+    navigation.replace('Login');
+  };
 
   // Scanning state machine
   const [scanning, setScanning] = useState(false);
@@ -315,7 +322,10 @@ export default function GuardScanScreen({ navigation }) {
         {/* Header Bar */}
         <SafeAreaView style={styles.headerBar}>
           <View style={styles.headerContent}>
-            <View>
+            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout} activeOpacity={0.7}>
+              <Text style={styles.logoutIcon}>🚪</Text>
+            </TouchableOpacity>
+            <View style={styles.headerTitleContainer}>
               <Text style={styles.headerTitle}>Hostel Biometric</Text>
               <Text style={styles.headerSubtitle}>MAIN GATE PORT</Text>
             </View>
@@ -418,6 +428,7 @@ const styles = StyleSheet.create({
     right: 0,
     zIndex: 10,
     backgroundColor: 'rgba(250, 248, 255, 0.95)',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     paddingBottom: 12,
   },
   headerContent: {
@@ -426,6 +437,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 8,
+  },
+  logoutButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#FFF1F2',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#FFE4E6',
+  },
+  logoutIcon: {
+    fontSize: 18,
+  },
+  headerTitleContainer: {
+    alignItems: 'center',
   },
   headerTitle: {
     fontSize: 22,

@@ -19,16 +19,32 @@ router = APIRouter(prefix="/outpass", tags=["Outpass Tracking"])
 @router.get("/logs/{admin_user_id}")
 async def get_logs(admin_user_id: str, limit: int = 20, current_user: dict = Depends(get_current_user)):
     """
-    Get recent outpass logs for students registered under a specific admin ID.
+    Get recent outpass logs for students in the same college as the caller.
     Requires authentication.
     """
     try:
+        # Look up the caller's college
+        caller = supabase.table("users").select("college_name").eq("id", admin_user_id).execute()
+        if not caller.data:
+            raise HTTPException(status_code=404, detail="User not found.")
+        
+        college_name = caller.data[0].get("college_name")
+        
+        # Get all users in this college
+        college_users = supabase.table("users").select("id").eq("college_name", college_name).execute()
+        college_user_ids = [u["id"] for u in college_users.data] if college_users.data else []
+        
+        if not college_user_ids:
+            return {"logs": []}
+            
         logs = supabase.table("outpass_logs")\
-            .select("*, students!inner(name, roll_number, room_number, user_id)")\
-            .eq("students.user_id", admin_user_id)\
+            .select("*, students!inner(name, roll_number, room_number, user_id, photo_url)")\
+            .in_("students.user_id", college_user_ids)\
             .order("timestamp", desc=True)\
             .limit(limit)\
             .execute()
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error fetching outpass logs: {e}")
         raise HTTPException(status_code=500, detail="Failed to fetch log history from database.")
@@ -39,20 +55,31 @@ async def get_logs(admin_user_id: str, limit: int = 20, current_user: dict = Dep
 @router.get("/currently-out/{admin_user_id}")
 async def currently_out(admin_user_id: str, current_user: dict = Depends(get_current_user)):
     """
-    Get all students under this admin who are currently OUT of the hostel.
-    
-    Optimized:
-      1. Fetch all student profiles registered under this admin.
-      2. Fetch all outpass logs under this admin's students sorted by timestamp.
-      3. Compute latest state in a single pass (O(N) execution time, 2 DB queries total).
-      4. Avoids the N+1 query loop.
+    Get all students in the same college who are currently OUT of the hostel.
+    Requires authentication.
     """
     try:
-        # 1. Fetch admin's student roster
+        # 1. Look up the caller's college
+        caller = supabase.table("users").select("college_name").eq("id", admin_user_id).execute()
+        if not caller.data:
+            raise HTTPException(status_code=404, detail="User not found.")
+        
+        college_name = caller.data[0].get("college_name")
+        
+        # Get all users in this college
+        college_users = supabase.table("users").select("id").eq("college_name", college_name).execute()
+        college_user_ids = [u["id"] for u in college_users.data] if college_users.data else []
+        
+        if not college_user_ids:
+            return {"count": 0, "students": []}
+
+        # 2. Fetch college's student roster
         students_res = supabase.table("students")\
-            .select("id, name, roll_number, room_number")\
-            .eq("user_id", admin_user_id)\
+            .select("id, name, roll_number, room_number, photo_url")\
+            .in_("user_id", college_user_ids)\
             .execute()
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error fetching student roster: {e}")
         raise HTTPException(status_code=500, detail="Failed to query student roster.")
@@ -61,19 +88,20 @@ async def currently_out(admin_user_id: str, current_user: dict = Depends(get_cur
         return {"count": 0, "students": []}
 
     students_map = {s["id"]: s for s in students_res.data}
+    student_ids = list(students_map.keys())
 
     try:
-        # 2. Query all logs under these students (ordered latest to oldest)
+        # 3. Query all logs under these students (ordered latest to oldest)
         logs_res = supabase.table("outpass_logs")\
-            .select("student_id, action, timestamp, students!inner(user_id)")\
-            .eq("students.user_id", admin_user_id)\
+            .select("student_id, action, timestamp")\
+            .in_("student_id", student_ids)\
             .order("timestamp", desc=True)\
             .execute()
     except Exception as e:
         logger.error(f"Error querying outpass logs: {e}")
         raise HTTPException(status_code=500, detail="Failed to query outpass logs.")
 
-    # 3. Deduplicate to get only the latest status for each student
+    # 4. Deduplicate to get only the latest status for each student
     latest_status = {}
     for log in logs_res.data:
         sid = log["student_id"]
@@ -83,7 +111,7 @@ async def currently_out(admin_user_id: str, current_user: dict = Depends(get_cur
                 "timestamp": log["timestamp"]
             }
 
-    # 4. Filter to find who is OUT
+    # 5. Filter to find who is OUT
     outside_students = []
     for sid, status in latest_status.items():
         if status["action"] == "OUT" and sid in students_map:

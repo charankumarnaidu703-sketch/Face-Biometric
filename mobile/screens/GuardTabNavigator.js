@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
 // Screens
 import GuardScanScreen from './GuardScanScreen';
 import RecentLogsScreen from './RecentLogsScreen';
+import OutsideStudentsScreen from './OutsideStudentsScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -23,6 +24,8 @@ export default function GuardTabNavigator() {
             icon = '📷';
           } else if (route.name === 'LogsTab') {
             icon = '📋';
+          } else if (route.name === 'OutsideTab') {
+            icon = '📤';
           }
 
           return (
@@ -41,6 +44,13 @@ export default function GuardTabNavigator() {
         }}
       />
       <Tab.Screen
+        name="OutsideTab"
+        component={OutsideStudentsScreen}
+        options={{
+          tabBarLabel: 'Outside',
+        }}
+      />
+      <Tab.Screen
         name="LogsTab"
         component={RecentLogsScreen}
         options={{
@@ -53,12 +63,12 @@ export default function GuardTabNavigator() {
 
 const styles = StyleSheet.create({
   tabBar: {
-    height: 64,
+    height: Platform.OS === 'ios' ? 88 : 72,
     backgroundColor: '#FFFFFF',
     borderTopWidth: 1,
     borderColor: '#E7E7F3',
-    paddingBottom: 8,
-    paddingTop: 8,
+    paddingBottom: Platform.OS === 'ios' ? 24 : 10,
+    paddingTop: 10,
     shadowColor: '#191B23',
     shadowOffset: { width: 0, height: -2 },
     shadowOpacity: 0.03,

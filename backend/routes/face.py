@@ -13,6 +13,7 @@ from services.supabase_client import supabase
 from routes.auth import get_current_user
 from pydantic import BaseModel, Field
 from typing import Optional, List
+from datetime import datetime, timedelta, timezone
 import logging
 
 logger = logging.getLogger(__name__)
@@ -206,6 +207,19 @@ async def log_action(payload: LogActionRequest, current_user: dict = Depends(get
 
     if not result.data:
         raise HTTPException(status_code=500, detail="Database insertion returned empty result.")
+
+    # Auto-cleanup: After checking IN, delete all outpass logs for this student that are older than 24 hours
+    if action_type == "IN":
+        try:
+            cutoff = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
+            supabase.table("outpass_logs")\
+                .delete()\
+                .eq("student_id", payload.student_id)\
+                .lt("timestamp", cutoff)\
+                .execute()
+            logger.info(f"Auto-cleaned logs older than 24 hours for student {payload.student_id}")
+        except Exception as e:
+            logger.error(f"Failed to auto-clean old logs: {e}")
 
     logger.info(f"Student outpass log registered: Student {payload.student_id} marked {action_type}")
     return {"success": True, "log": result.data[0]}

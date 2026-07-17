@@ -10,15 +10,22 @@ import {
   StatusBar,
   RefreshControl,
   Image,
+  Platform,
 } from 'react-native';
 import { getRecentLogs } from '../services/api';
 import useStore from '../store/useStore';
 
-export default function RecentLogsScreen() {
+export default function RecentLogsScreen({ navigation }) {
   const user = useStore((s) => s.user); // Guard user details
+  const logout = useStore((s) => s.logout);
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+
+  const handleLogout = async () => {
+    await logout();
+    navigation.replace('Login');
+  };
 
   const fetchLogs = async (showSpinner = false) => {
     if (showSpinner) setLoading(true);
@@ -175,8 +182,8 @@ export default function RecentLogsScreen() {
       {/* Top Header Bar */}
       <View style={styles.headerBar}>
         <View style={styles.headerContent}>
-          <TouchableOpacity style={styles.menuButton}>
-            <Text style={styles.menuIcon}>☰</Text>
+          <TouchableOpacity style={styles.menuButton} onPress={handleLogout} activeOpacity={0.7}>
+            <Text style={styles.menuIcon}>🚪</Text>
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Hostel Biometric</Text>
           <View style={styles.avatarCircle}>
@@ -245,6 +252,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FAF8FF',
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   headerBar: {
     backgroundColor: '#FFFFFF',
