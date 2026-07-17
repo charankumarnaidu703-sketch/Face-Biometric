@@ -141,7 +141,7 @@ export default function FaceEnrollmentScreen({ route, navigation }) {
       <CameraView ref={cameraRef} style={StyleSheet.absoluteFillObject} facing={cameraFacing}>
         
         {/* Semi-transparent dark layout mask (focus overlay) */}
-        <View style={styles.maskContainer}>
+        <View style={styles.maskContainer} pointerEvents="none">
           <Svg style={StyleSheet.absoluteFillObject}>
             <Ellipse
               cx={OVAL_CX}
@@ -167,6 +167,7 @@ export default function FaceEnrollmentScreen({ route, navigation }) {
               height: (OVAL_RY * 2) + 16,
             },
           ]}
+          pointerEvents="none"
         >
           <View style={styles.bracketTopLeft} />
           <View style={styles.bracketTopRight} />
@@ -174,8 +175,8 @@ export default function FaceEnrollmentScreen({ route, navigation }) {
           <View style={styles.bracketBottomRight} />
         </View>
 
-        {/* Foreground Content Stack */}
-        <SafeAreaView style={styles.overlayContent}>
+        {/* Foreground Content Stack (Positioned absolutely to prevent Android rendering collapse) */}
+        <View style={styles.overlayContent} pointerEvents="box-none">
           {/* Top Header Row */}
           <View style={styles.topBar}>
             <TouchableOpacity
@@ -246,7 +247,8 @@ export default function FaceEnrollmentScreen({ route, navigation }) {
               </View>
             </TouchableOpacity>
           </View>
-        </SafeAreaView>
+        </View>
+
 
         {/* Flash Effect View */}
         <Animated.View
@@ -372,16 +374,19 @@ const styles = StyleSheet.create({
 
   // --- Foreground Content ---
   overlayContent: {
-    flex: 1,
-    justifyContent: 'space-between',
+    ...StyleSheet.absoluteFillObject,
     zIndex: 30,
   },
   topBar: {
+    position: 'absolute',
+    top: Platform.OS === 'android' ? StatusBar.currentHeight + 12 : 48,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight + 12 : 12,
+    zIndex: 40,
   },
   circleButton: {
     width: 44,
@@ -416,17 +421,19 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
   instructionBanner: {
+    position: 'absolute',
+    top: SCREEN_HEIGHT * 0.16,
     alignSelf: 'center',
     backgroundColor: '#2563EB',
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 20,
-    marginTop: 12,
     shadowColor: '#2563EB',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 3,
+    zIndex: 40,
   },
   instructionText: {
     color: '#FFFFFF',
@@ -438,8 +445,12 @@ const styles = StyleSheet.create({
 
   // --- Bottom controls ---
   bottomControls: {
+    position: 'absolute',
+    bottom: 36,
+    left: 0,
+    right: 0,
     alignItems: 'center',
-    paddingBottom: 36,
+    zIndex: 40,
   },
   progressText: {
     fontSize: 14,
