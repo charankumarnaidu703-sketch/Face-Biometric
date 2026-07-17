@@ -52,10 +52,12 @@ async def enroll_face(payload: EnrollRequest, current_user: dict = Depends(get_c
     if current_user.get("role") != "admin":
         raise HTTPException(status_code=403, detail="Forbidden: Only administrators can enroll student faces")
 
-    # Verify student profile exists
-    student_check = supabase.table("students").select("id").eq("id", payload.student_id).execute()
+    # Verify student profile exists and select photo_url
+    student_check = supabase.table("students").select("id", "photo_url").eq("id", payload.student_id).execute()
     if not student_check.data:
         raise HTTPException(status_code=404, detail="Student profile not found.")
+    
+    student_record = student_check.data[0]
 
     # Extract 128-D vector
     result = extract_embedding(payload.base64_image)
@@ -71,7 +73,12 @@ async def enroll_face(payload: EnrollRequest, current_user: dict = Depends(get_c
         }).execute()
 
         # Update enrollment flag on student profile
-        supabase.table("students").update({"is_enrolled": True}).eq("id", payload.student_id).execute()
+        update_data = {"is_enrolled": True}
+        # If no photo is saved yet, save this first image as their photo_url
+        if not student_record.get("photo_url"):
+            update_data["photo_url"] = f"data:image/jpeg;base64,{payload.base64_image}"
+
+        supabase.table("students").update(update_data).eq("id", payload.student_id).execute()
     except Exception as e:
         logger.error(f"Failed to save face enrollment: {e}")
         raise HTTPException(status_code=500, detail=f"Database insertion failed: {str(e)}")

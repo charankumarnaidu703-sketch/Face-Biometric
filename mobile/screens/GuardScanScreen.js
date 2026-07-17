@@ -11,6 +11,7 @@ import {
   Animated,
   Dimensions,
   Modal,
+  Image,
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import Svg, { Ellipse } from 'react-native-svg';
@@ -153,21 +154,28 @@ export default function GuardScanScreen({ navigation }) {
               { borderColor: isMatched ? '#16A34A' : '#DC2626' },
             ]}
           >
-            {/* Status Icon */}
-            <View
-              style={[
-                styles.resultIconCircle,
-                {
-                  backgroundColor: isMatched
-                    ? 'rgba(22, 163, 74, 0.1)'
-                    : 'rgba(220, 38, 38, 0.1)',
-                },
-              ]}
-            >
-              <Text style={styles.resultIconEmoji}>
-                {isMatched ? '✅' : '❌'}
-              </Text>
-            </View>
+            {/* Status Icon / Student Avatar */}
+            {isMatched && scanResult.student?.photo_url ? (
+              <Image
+                source={{ uri: scanResult.student.photo_url }}
+                style={styles.resultAvatarImage}
+              />
+            ) : (
+              <View
+                style={[
+                  styles.resultIconCircle,
+                  {
+                    backgroundColor: isMatched
+                      ? 'rgba(22, 163, 74, 0.1)'
+                      : 'rgba(220, 38, 38, 0.1)',
+                  },
+                ]}
+              >
+                <Text style={styles.resultIconEmoji}>
+                  {isMatched ? '✅' : '❌'}
+                </Text>
+              </View>
+            )}
 
             {/* Title */}
             <Text
@@ -585,6 +593,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 20,
     elevation: 12,
+  },
+  resultAvatarImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 3,
+    borderColor: '#16A34A',
+    marginBottom: 16,
   },
   resultIconCircle: {
     width: 64,

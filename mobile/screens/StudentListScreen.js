@@ -11,6 +11,7 @@ import {
   StatusBar,
   RefreshControl,
   Alert,
+  Image,
 } from 'react-native';
 import useStore from '../store/useStore';
 import { getStudents } from '../services/api';
@@ -158,7 +159,11 @@ export default function StudentListScreen({ navigation }) {
             >
               <View style={styles.cardHeader}>
                 <View style={styles.avatarCircle}>
-                  <Text style={styles.avatarTextIcon}>👤</Text>
+                  {item.photo_url ? (
+                    <Image source={{ uri: item.photo_url }} style={styles.avatarImage} />
+                  ) : (
+                    <Text style={styles.avatarTextIcon}>👤</Text>
+                  )}
                 </View>
                 <View style={styles.headerDetails}>
                   <Text style={styles.studentName}>{item.full_name}</Text>
@@ -359,6 +364,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
+    overflow: 'hidden',
+  },
+  avatarImage: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
   },
   avatarTextIcon: {
     fontSize: 20,
