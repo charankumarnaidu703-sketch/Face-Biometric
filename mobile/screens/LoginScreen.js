@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
   StatusBar,
   SafeAreaView,
+  ScrollView,
 } from 'react-native';
 import { login } from '../services/api';
 import useStore from '../store/useStore';
@@ -57,90 +58,96 @@ export default function LoginScreen({ navigation }) {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.keyboardView}
       >
-        {/* Header Section */}
-        <View style={styles.header}>
-          <View style={styles.iconContainer}>
-            <Text style={styles.iconText}>🛡️</Text>
-          </View>
-          <Text style={styles.title}>Hostel Biometric</Text>
-          <Text style={styles.subtitle}>Institutional Security Dashboard</Text>
-        </View>
-
-        {/* Form Section */}
-        <View style={styles.form}>
-          {/* Email Field */}
-          <View style={styles.fieldGroup}>
-            <Text style={styles.label}>EMAIL ADDRESS</Text>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputIcon}>✉️</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="admin@institution.edu"
-                placeholderTextColor="#C3C6D7"
-                value={email}
-                onChangeText={setEmail}
-                autoCapitalize="none"
-                keyboardType="email-address"
-                autoComplete="email"
-                returnKeyType="next"
-                editable={!loading}
-              />
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          {/* Header Section */}
+          <View style={styles.header}>
+            <View style={styles.iconContainer}>
+              <Text style={styles.iconText}>🛡️</Text>
             </View>
+            <Text style={styles.title}>Hostel Biometric</Text>
+            <Text style={styles.subtitle}>Institutional Security Dashboard</Text>
           </View>
 
-          {/* Password Field */}
-          <View style={styles.fieldGroup}>
-            <Text style={styles.label}>PASSWORD</Text>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputIcon}>🔑</Text>
-              <TextInput
-                style={styles.input}
-                placeholder="••••••••"
-                placeholderTextColor="#C3C6D7"
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry={!passwordVisible}
-                autoCapitalize="none"
-                returnKeyType="done"
-                onSubmitEditing={handleLogin}
-                editable={!loading}
-              />
-              <TouchableOpacity
-                style={styles.visibilityToggle}
-                onPress={() => setPasswordVisible(!passwordVisible)}
-                activeOpacity={0.6}
-              >
-                <Text style={styles.visibilityIcon}>
-                  {passwordVisible ? '🙈' : '👁️'}
-                </Text>
-              </TouchableOpacity>
+          {/* Form Section */}
+          <View style={styles.form}>
+            {/* Email Field */}
+            <View style={styles.fieldGroup}>
+              <Text style={styles.label}>EMAIL ADDRESS</Text>
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputIcon}>✉️</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="admin@institution.edu"
+                  placeholderTextColor="#C3C6D7"
+                  value={email}
+                  onChangeText={setEmail}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                  autoComplete="email"
+                  returnKeyType="next"
+                  editable={!loading}
+                />
+              </View>
             </View>
+
+            {/* Password Field */}
+            <View style={styles.fieldGroup}>
+              <Text style={styles.label}>PASSWORD</Text>
+              <View style={styles.inputContainer}>
+                <Text style={styles.inputIcon}>🔑</Text>
+                <TextInput
+                  style={styles.input}
+                  placeholder="••••••••"
+                  placeholderTextColor="#C3C6D7"
+                  value={password}
+                  onChangeText={setPassword}
+                  secureTextEntry={!passwordVisible}
+                  autoCapitalize="none"
+                  returnKeyType="done"
+                  onSubmitEditing={handleLogin}
+                  editable={!loading}
+                />
+                <TouchableOpacity
+                  style={styles.visibilityToggle}
+                  onPress={() => setPasswordVisible(!passwordVisible)}
+                  activeOpacity={0.6}
+                >
+                  <Text style={styles.visibilityIcon}>
+                    {passwordVisible ? '🙈' : '👁️'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            {/* Login Button */}
+            <TouchableOpacity
+              style={[styles.loginButton, loading && styles.loginButtonDisabled]}
+              onPress={handleLogin}
+              disabled={loading}
+              activeOpacity={0.85}
+            >
+              {loading ? (
+                <ActivityIndicator color="#FFFFFF" size="small" />
+              ) : (
+                <Text style={styles.loginButtonText}>LOGIN TO DASHBOARD</Text>
+              )}
+            </TouchableOpacity>
+
+            {/* Forgot Password */}
+            <TouchableOpacity style={styles.forgotContainer} activeOpacity={0.6}>
+              <Text style={styles.forgotText}>Forgot Password?</Text>
+            </TouchableOpacity>
           </View>
 
-          {/* Login Button */}
-          <TouchableOpacity
-            style={[styles.loginButton, loading && styles.loginButtonDisabled]}
-            onPress={handleLogin}
-            disabled={loading}
-            activeOpacity={0.85}
-          >
-            {loading ? (
-              <ActivityIndicator color="#FFFFFF" size="small" />
-            ) : (
-              <Text style={styles.loginButtonText}>LOGIN TO DASHBOARD</Text>
-            )}
-          </TouchableOpacity>
-
-          {/* Forgot Password */}
-          <TouchableOpacity style={styles.forgotContainer} activeOpacity={0.6}>
-            <Text style={styles.forgotText}>Forgot Password?</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Footer */}
-        <View style={styles.footer}>
-          <Text style={styles.footerText}>POWERED BY BIOMETRIC AI 🔐</Text>
-        </View>
+          {/* Footer */}
+          <View style={styles.footer}>
+            <Text style={styles.footerText}>POWERED BY BIOMETRIC AI 🔐</Text>
+          </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -153,8 +160,12 @@ const styles = StyleSheet.create({
   },
   keyboardView: {
     flex: 1,
+  },
+  scrollContent: {
+    flexGrow: 1,
     justifyContent: 'center',
     paddingHorizontal: 24,
+    paddingVertical: 24,
   },
 
   // --- Header ---

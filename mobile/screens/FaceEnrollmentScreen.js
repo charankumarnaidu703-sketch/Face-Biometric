@@ -10,12 +10,19 @@ import {
   StatusBar,
   Animated,
   Dimensions,
+  Platform,
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
 import Svg, { Ellipse } from 'react-native-svg';
 import { enrollFace } from '../services/api';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+
+// Responsive guide dimensions
+const OVAL_CX = SCREEN_WIDTH / 2;
+const OVAL_CY = SCREEN_HEIGHT * 0.42;
+const OVAL_RX = SCREEN_WIDTH * 0.32;
+const OVAL_RY = SCREEN_WIDTH * 0.42;
 
 const INSTRUCTIONS = [
   'Look straight at the camera',
@@ -67,7 +74,6 @@ export default function FaceEnrollmentScreen({ route, navigation }) {
       const photo = await cameraRef.current.takePictureAsync({
         quality: 0.6,
         base64: true,
-        skipProcessing: false,
       });
 
       if (!photo?.base64) {
@@ -138,10 +144,10 @@ export default function FaceEnrollmentScreen({ route, navigation }) {
         <View style={styles.maskContainer}>
           <Svg style={StyleSheet.absoluteFillObject}>
             <Ellipse
-              cx={SCREEN_WIDTH / 2}
-              cy={SCREEN_HEIGHT * 0.45}
-              rx={110}
-              ry={140}
+              cx={OVAL_CX}
+              cy={OVAL_CY}
+              rx={OVAL_RX}
+              ry={OVAL_RY}
               fill="transparent"
               stroke="#10B981"
               strokeWidth={3}
@@ -154,7 +160,12 @@ export default function FaceEnrollmentScreen({ route, navigation }) {
         <View
           style={[
             styles.bracketContainer,
-            { top: SCREEN_HEIGHT * 0.45 - 150, left: SCREEN_WIDTH / 2 - 120 },
+            { 
+              top: OVAL_CY - OVAL_RY - 8, 
+              left: OVAL_CX - OVAL_RX - 8,
+              width: (OVAL_RX * 2) + 16,
+              height: (OVAL_RY * 2) + 16,
+            },
           ]}
         >
           <View style={styles.bracketTopLeft} />
