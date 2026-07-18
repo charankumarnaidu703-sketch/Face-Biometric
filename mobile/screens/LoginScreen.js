@@ -15,6 +15,7 @@ import {
 } from 'react-native';
 import { login } from '../services/api';
 import useStore from '../store/useStore';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
@@ -66,7 +67,7 @@ export default function LoginScreen({ navigation }) {
           {/* Header Section */}
           <View style={styles.header}>
             <View style={styles.iconContainer}>
-              <Text style={styles.iconText}>🛡️</Text>
+              <Ionicons name="shield-checkmark" size={32} color="#2563EB" />
             </View>
             <Text style={styles.title}>Hostel Biometric</Text>
             <Text style={styles.subtitle}>Institutional Security Dashboard</Text>
@@ -78,7 +79,7 @@ export default function LoginScreen({ navigation }) {
             <View style={styles.fieldGroup}>
               <Text style={styles.label}>EMAIL ADDRESS</Text>
               <View style={styles.inputContainer}>
-                <Text style={styles.inputIcon}>✉️</Text>
+                <Ionicons name="mail-outline" size={20} color="#737686" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
                   placeholder="admin@institution.edu"
@@ -98,7 +99,7 @@ export default function LoginScreen({ navigation }) {
             <View style={styles.fieldGroup}>
               <Text style={styles.label}>PASSWORD</Text>
               <View style={styles.inputContainer}>
-                <Text style={styles.inputIcon}>🔑</Text>
+                <Ionicons name="key-outline" size={20} color="#737686" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
                   placeholder="••••••••"
@@ -116,9 +117,11 @@ export default function LoginScreen({ navigation }) {
                   onPress={() => setPasswordVisible(!passwordVisible)}
                   activeOpacity={0.6}
                 >
-                  <Text style={styles.visibilityIcon}>
-                    {passwordVisible ? '🙈' : '👁️'}
-                  </Text>
+                  <Ionicons 
+                    name={passwordVisible ? "eye-off-outline" : "eye-outline"} 
+                    size={20} 
+                    color="#737686" 
+                  />
                 </TouchableOpacity>
               </View>
             </View>
@@ -145,7 +148,9 @@ export default function LoginScreen({ navigation }) {
 
           {/* Footer */}
           <View style={styles.footer}>
-            <Text style={styles.footerText}>POWERED BY BIOMETRIC AI 🔐</Text>
+            <Text style={styles.footerText}>
+              POWERED BY BIOMETRIC AI <Ionicons name="lock-closed" size={14} color="#C3C6D7" />
+            </Text>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -227,8 +232,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   inputIcon: {
-    fontSize: 18,
-    marginRight: 12,
+    marginRight: 10,
   },
   input: {
     flex: 1,

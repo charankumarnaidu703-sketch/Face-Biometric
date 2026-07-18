@@ -11,9 +11,12 @@ import {
   RefreshControl,
   Image,
   Platform,
+  Alert,
 } from 'react-native';
 import { getCurrentlyOut } from '../services/api';
 import useStore from '../store/useStore';
+import { Ionicons } from '@expo/vector-icons';
+import StudentDetailsModal from '../components/StudentDetailsModal';
 
 export default function OutsideStudentsScreen({ navigation }) {
   const user = useStore((s) => s.user); // Guard user details
@@ -21,6 +24,13 @@ export default function OutsideStudentsScreen({ navigation }) {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleStudentPress = (student) => {
+    setSelectedStudent(student);
+    setModalVisible(true);
+  };
 
   const fetchOutsideStudents = async (showSpinner = false) => {
     if (showSpinner) setLoading(true);
@@ -51,7 +61,11 @@ export default function OutsideStudentsScreen({ navigation }) {
 
   const formatOutTime = (isoString) => {
     try {
-      const date = new Date(isoString);
+      let safeStr = isoString;
+      if (safeStr && !safeStr.includes('Z') && !safeStr.includes('+')) {
+        safeStr += 'Z';
+      }
+      const date = new Date(safeStr);
       const today = new Date();
       const diffMs = today - date;
       const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
@@ -73,7 +87,11 @@ export default function OutsideStudentsScreen({ navigation }) {
 
   const renderStudentItem = ({ item }) => {
     return (
-      <View style={styles.studentCard}>
+      <TouchableOpacity 
+        style={styles.studentCard} 
+        onPress={() => handleStudentPress(item)} 
+        activeOpacity={0.75}
+      >
         {/* Left Side: Avatar */}
         <View style={styles.avatarBorder}>
           {item.photo_url ? (
@@ -106,7 +124,7 @@ export default function OutsideStudentsScreen({ navigation }) {
 
         {/* Right Side: Status dot */}
         <View style={styles.statusDot} />
-      </View>
+      </TouchableOpacity>
     );
   };
 
@@ -117,7 +135,7 @@ export default function OutsideStudentsScreen({ navigation }) {
       {/* Header Bar */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.logoutButton} onPress={handleLogout} activeOpacity={0.7}>
-          <Text style={styles.logoutText}>🚪</Text>
+          <Ionicons name="log-out-outline" size={22} color="#DC2626" />
         </TouchableOpacity>
         <View style={styles.headerTitleContainer}>
           <Text style={styles.headerTitle}>Currently Outside</Text>
@@ -152,7 +170,7 @@ export default function OutsideStudentsScreen({ navigation }) {
           }
           ListEmptyComponent={
             <View style={styles.emptyContainer}>
-              <Text style={styles.emptyIcon}>🏠</Text>
+              <Ionicons name="home-outline" size={48} color="#C3C6D7" style={{ marginBottom: 16 }} />
               <Text style={styles.emptyTitle}>All Students Inside</Text>
               <Text style={styles.emptyText}>
                 No students are currently checked out of the hostel gates.
@@ -161,6 +179,14 @@ export default function OutsideStudentsScreen({ navigation }) {
           }
         />
       )}
+
+      <StudentDetailsModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        student={selectedStudent}
+        status="OUT"
+        time={selectedStudent?.out_since}
+      />
     </SafeAreaView>
   );
 }

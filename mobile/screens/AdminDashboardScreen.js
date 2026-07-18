@@ -13,7 +13,8 @@ import {
   Platform,
 } from 'react-native';
 import useStore from '../store/useStore';
-import { getStudents, getRecentLogs, getCurrentlyOut } from '../services/api';
+import { getStudentStats, getRecentLogs, getCurrentlyOut } from '../services/api';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function AdminDashboardScreen({ navigation }) {
   const user = useStore((s) => s.user);
@@ -34,23 +35,26 @@ export default function AdminDashboardScreen({ navigation }) {
   const fetchDashboardData = async () => {
     if (!user?.id) return;
     try {
-      // Execute fetches in parallel
-      const [studentsRes, outRes, logsRes] = await Promise.all([
-        getStudents(user.id),
+      // Execute fetches in parallel — each call handles errors independently
+      const [statsRes, outRes, logsRes] = await Promise.allSettled([
+        getStudentStats(user.id),
         getCurrentlyOut(user.id),
         getRecentLogs(user.id),
       ]);
 
-      const studentsList = studentsRes.data || [];
-      const outList = outRes.data || [];
-      const logsList = logsRes.data || [];
+      // Extract stats from the dedicated /stats endpoint
+      const statsData = statsRes.status === 'fulfilled' ? statsRes.value.data : {};
+      const totalCount = statsData.total_students || 0;
+      const enrolledCount = statsData.enrolled_faces || 0;
 
-      // Compute statistics
-      const totalCount = studentsList.length;
-      // Filter enrolled faces (students who have embeddings stored)
-      const enrolledCount = studentsList.filter((s) => s.face_embedding !== null).length;
-      const outCount = outList.length;
+      // Extract currently-out count
+      const outData = outRes.status === 'fulfilled' ? outRes.value.data : {};
+      const outCount = outData.count || 0;
       const inCount = totalCount - outCount;
+
+      // Extract recent logs
+      const logsData = logsRes.status === 'fulfilled' ? logsRes.value.data : {};
+      const logsList = logsData.logs || [];
 
       setStats({
         totalStudents: totalCount,
@@ -115,12 +119,12 @@ export default function AdminDashboardScreen({ navigation }) {
       {/* Header Bar */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.headerButton} onPress={handleLogout}>
-          <Text style={styles.headerIcon}>🚪</Text>
+          <Ionicons name="log-out-outline" size={22} color="#DC2626" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Hostel Biometric</Text>
         <View style={styles.headerRight}>
           <TouchableOpacity style={styles.headerButton}>
-            <Text style={styles.headerIcon}>🔔</Text>
+            <Ionicons name="notifications-outline" size={22} color="#434655" />
           </TouchableOpacity>
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>A</Text>
@@ -137,7 +141,7 @@ export default function AdminDashboardScreen({ navigation }) {
         {/* Welcome Section */}
         <View style={styles.welcomeSection}>
           <Text style={styles.welcomeTitle}>
-            Welcome Back, Admin <Text style={styles.handEmoji}>👋</Text>
+            Welcome Back, Admin
           </Text>
           <Text style={styles.welcomeSubtitle}>
             {user?.college_name || 'St. Jude Engineering Hostel'}
@@ -149,7 +153,7 @@ export default function AdminDashboardScreen({ navigation }) {
           {/* Card 1: Total Students */}
           <View style={styles.statsCard}>
             <View style={styles.statsCardHeader}>
-              <Text style={styles.statsLabelIcon}>👥</Text>
+              <Ionicons name="people-outline" size={20} color="#2563EB" style={{ marginRight: 8 }} />
               <Text style={styles.statsLabel}>Total Students</Text>
             </View>
             <Text style={styles.statsValue}>{stats.totalStudents}</Text>
@@ -159,7 +163,7 @@ export default function AdminDashboardScreen({ navigation }) {
           <View style={styles.statsCard}>
             <View style={styles.statsCardHeader}>
               <View style={styles.statsHeaderLeft}>
-                <Text style={styles.statsLabelIcon}>👤</Text>
+                <Ionicons name="scan-outline" size={20} color="#10B981" style={{ marginRight: 8 }} />
                 <Text style={styles.statsLabel}>Enrolled Faces</Text>
               </View>
               <View style={styles.badge}>
@@ -172,7 +176,7 @@ export default function AdminDashboardScreen({ navigation }) {
           {/* Card 3: Currently OUT */}
           <View style={styles.statsCard}>
             <View style={styles.statsCardHeader}>
-              <Text style={styles.statsLabelIcon}>📤</Text>
+              <Ionicons name="exit-outline" size={20} color="#DC2626" style={{ marginRight: 8 }} />
               <Text style={styles.statsLabel}>Currently OUT</Text>
             </View>
             <Text style={[styles.statsValue, styles.textOut]}>{stats.currentlyOut}</Text>
@@ -181,7 +185,7 @@ export default function AdminDashboardScreen({ navigation }) {
           {/* Card 4: Currently IN */}
           <View style={styles.statsCard}>
             <View style={styles.statsCardHeader}>
-              <Text style={styles.statsLabelIcon}>📥</Text>
+              <Ionicons name="enter-outline" size={20} color="#16A34A" style={{ marginRight: 8 }} />
               <Text style={styles.statsLabel}>Currently IN</Text>
             </View>
             <Text style={[styles.statsValue, styles.textIn]}>{stats.currentlyIn}</Text>
@@ -199,7 +203,10 @@ export default function AdminDashboardScreen({ navigation }) {
             onPress={() => navigation.navigate('RegisterStudent')}
             activeOpacity={0.8}
           >
-            <Text style={styles.primaryActionText}>👤+  Register New Student</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+              <Ionicons name="person-add-outline" size={20} color="#FFFFFF" style={{ marginRight: 8 }} />
+              <Text style={styles.primaryActionText}>Register New Student</Text>
+            </View>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -207,7 +214,10 @@ export default function AdminDashboardScreen({ navigation }) {
             onPress={() => navigation.navigate('StudentList')}
             activeOpacity={0.8}
           >
-            <Text style={styles.secondaryActionText}>⚙️  View Roster & Student Profiles</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+              <Ionicons name="people-outline" size={20} color="#2563EB" style={{ marginRight: 8 }} />
+              <Text style={styles.secondaryActionText}>View Roster & Student Profiles</Text>
+            </View>
           </TouchableOpacity>
         </View>
 
@@ -235,7 +245,11 @@ export default function AdminDashboardScreen({ navigation }) {
             recentLogs.map((log) => (
               <View key={log.id} style={styles.logRow}>
                 <View style={styles.logProfileContainer}>
-                  <Text style={styles.logProfilePlaceholder}>👤</Text>
+                  {log.students?.photo_url ? (
+                    <Image source={{ uri: log.students.photo_url }} style={styles.logProfileImage} />
+                  ) : (
+                    <Ionicons name="person-outline" size={16} color="#737686" />
+                  )}
                 </View>
                 <View style={styles.logDetails}>
                   <Text style={styles.logName}>
@@ -523,9 +537,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 12,
+    overflow: 'hidden',
   },
-  logProfilePlaceholder: {
-    fontSize: 18,
+  logProfileImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 20,
   },
   logDetails: {
     flex: 1,

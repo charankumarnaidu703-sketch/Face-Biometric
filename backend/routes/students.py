@@ -10,6 +10,7 @@ Endpoints:
 
 from fastapi import APIRouter, HTTPException, Depends
 from services.supabase_client import supabase
+from services.college_cache import get_college_info
 from routes.auth import get_current_user
 from pydantic import BaseModel, Field
 from typing import Optional, List
@@ -81,14 +82,70 @@ async def register_student(payload: StudentRegisterRequest, current_user: dict =
     return {"success": True, "student": result.data[0]}
 
 
+@router.get("/stats/{user_id}")
+async def get_student_stats(user_id: str, current_user: dict = Depends(get_current_user)):
+    """
+    Get aggregate statistics for the admin dashboard: total students and enrolled faces count.
+    ponytail: CollegeCache eliminates 2 DB calls. Down from 5+ queries to 2.
+    """
+    try:
+        # Get college user IDs (cached — 0ms warm)
+        college_name, college_user_ids = get_college_info(supabase, user_id)
+        if not college_name:
+            raise HTTPException(status_code=404, detail="User not found.")
+        
+        if not college_user_ids:
+            return {"total_students": 0, "enrolled_faces": 0}
+        
+        # Count total students (batched)
+        total_students = 0
+        all_student_ids = []
+        batch_size = 50
+        for i in range(0, len(college_user_ids), batch_size):
+            chunk = college_user_ids[i:i + batch_size]
+            res = supabase.table("students").select("id").in_("user_id", chunk).execute()
+            if res.data:
+                total_students += len(res.data)
+                all_student_ids.extend([s["id"] for s in res.data])
+        
+        # Count enrolled faces (batched)
+        enrolled_faces = 0
+        for i in range(0, len(all_student_ids), batch_size):
+            chunk = all_student_ids[i:i + batch_size]
+            try:
+                emb_res = supabase.table("face_embeddings").select("student_id").in_("student_id", chunk).execute()
+                if emb_res.data:
+                    enrolled_faces += len(emb_res.data)
+            except Exception:
+                pass
+        
+        return {"total_students": total_students, "enrolled_faces": enrolled_faces}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get stats: {str(e)}")
+
+
 @router.get("/list/{user_id}")
 async def list_students(user_id: str, current_user: dict = Depends(get_current_user)):
     """
     Get all students registered under a specific admin ID.
+    Includes face enrollment status by joining with face_embeddings table.
     Requires authentication.
     """
-    result = supabase.table("students").select("*").eq("user_id", user_id).execute()
-    return {"students": result.data}
+    result = supabase.table("students")\
+        .select("*, face_embeddings(student_id)")\
+        .eq("user_id", user_id)\
+        .execute()
+    
+    # Transform: add 'is_enrolled' flag based on whether face_embeddings join returned data
+    students = []
+    for s in (result.data or []):
+        embeddings = s.pop("face_embeddings", None)
+        s["is_enrolled"] = bool(embeddings)
+        students.append(s)
+    
+    return {"students": students}
 
 
 @router.get("/{student_id}")

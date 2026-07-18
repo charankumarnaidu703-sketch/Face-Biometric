@@ -62,6 +62,14 @@ export default function FaceEnrollmentScreen({ route, navigation }) {
     setCameraFacing((f) => (f === 'front' ? 'back' : 'front'));
   };
 
+  const handleCancel = () => {
+    if (navigation.canGoBack()) {
+      navigation.goBack();
+    } else {
+      navigation.replace('AdminDashboard');
+    }
+  };
+
   const handleCapture = async () => {
     if (loading || capturedCount >= 3) return;
     if (!cameraRef.current) return;
@@ -71,7 +79,7 @@ export default function FaceEnrollmentScreen({ route, navigation }) {
 
     try {
       const photo = await cameraRef.current.takePictureAsync({
-        quality: 0.6,
+        quality: 0.35, // Lower quality to reduce base64 payload size for tunnel stability
         base64: true,
       });
 
@@ -79,7 +87,25 @@ export default function FaceEnrollmentScreen({ route, navigation }) {
         throw new Error('Failed to retrieve image raw base64 data.');
       }
 
-      const res = await enrollFace(studentId, photo.base64);
+      // Retry logic for transient 502/503 gateway errors from the tunnel
+      let res;
+      let attempts = 0;
+      const maxRetries = 2;
+      while (attempts <= maxRetries) {
+        try {
+          res = await enrollFace(studentId, photo.base64);
+          break; // Success — exit retry loop
+        } catch (retryErr) {
+          const status = retryErr?.response?.status;
+          if ((status === 502 || status === 503) && attempts < maxRetries) {
+            attempts++;
+            console.warn(`Enrollment attempt ${attempts} failed with ${status}, retrying...`);
+            await new Promise(r => setTimeout(r, 1500)); // Wait 1.5s before retry
+          } else {
+            throw retryErr; // Re-throw for the outer catch block
+          }
+        }
+      }
 
       if (res.data?.success) {
         const nextCount = capturedCount + 1;
@@ -105,9 +131,54 @@ export default function FaceEnrollmentScreen({ route, navigation }) {
       }
     } catch (err) {
       console.error(err);
-      const detail =
-        err.response?.data?.detail || 'Failed to connect to biometric service.';
-      Alert.alert('Face Capture Failed', detail);
+      
+      let detail = 'Failed to connect to biometric service. Please ensure the backend is running and you are connected to the network.';
+      let isScanningError = false;
+      
+      if (err.response?.status === 502 || err.response?.status === 503) {
+        // Gateway/tunnel timeout — the backend likely took too long to respond
+        detail = 'The server connection timed out (502 Gateway Error). This usually happens with slow network tunnels. Please wait a moment and try again.';
+        isScanningError = true;
+      } else if (err.response?.data?.detail) {
+        const rawDetail = err.response.data.detail;
+        if (rawDetail === 'NO_FACE_DETECTED') {
+          detail = 'No face was detected in the photo. Please make sure the student is looking directly at the camera, their face is inside the circular frame, and the lighting is good.';
+          isScanningError = true;
+        } else if (rawDetail === 'MULTIPLE_FACES_DETECTED') {
+          detail = 'Multiple faces were detected in the photo. Please ensure that only the student is visible in the camera frame.';
+          isScanningError = true;
+        } else if (rawDetail === 'INVALID_IMAGE') {
+          detail = 'The captured image was invalid or corrupt. Please try capturing the photo again.';
+          isScanningError = true;
+        } else if (typeof rawDetail === 'string') {
+          detail = rawDetail;
+          isScanningError = true;
+        }
+      } else if (err.message) {
+        // If it's a network error or timeout
+        detail = `${err.message}. Please check your internet connection or backend server status.`;
+      }
+      
+      if (isScanningError) {
+        Alert.alert(
+          'Face Capture Failed',
+          `${detail}\n\n💡 Tip: Choose a well-lit spot without strong reflections, glare, or shadows, and look straight at the camera.`,
+          [
+            {
+              text: 'Try Again (Restart)',
+              onPress: () => {
+                setCapturedCount(0); // Restart from Step 1
+              },
+            },
+            {
+              text: 'Cancel',
+              style: 'cancel',
+            }
+          ]
+        );
+      } else {
+        Alert.alert('Face Capture Failed', detail);
+      }
     } finally {
       setLoading(false);
     }
@@ -192,7 +263,7 @@ export default function FaceEnrollmentScreen({ route, navigation }) {
           <View style={styles.headerContent}>
             <TouchableOpacity
               style={styles.circleButton}
-              onPress={() => navigation.goBack()}
+              onPress={handleCancel}
               disabled={loading}
               activeOpacity={0.7}
             >

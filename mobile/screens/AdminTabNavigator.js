@@ -1,6 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 
 // Screens
 import AdminDashboardScreen from './AdminDashboardScreen';
@@ -19,20 +20,16 @@ export default function AdminTabNavigator() {
         tabBarStyle: styles.tabBar,
         tabBarLabelStyle: styles.tabBarLabel,
         tabBarIcon: ({ color, focused }) => {
-          let icon = '❓';
+          let iconName = 'help-circle-outline';
           if (route.name === 'AdminHome') {
-            icon = focused ? '🏠' : '🏠';
+            iconName = focused ? 'home' : 'home-outline';
           } else if (route.name === 'StudentList') {
-            icon = focused ? '👥' : '👥';
+            iconName = focused ? 'people' : 'people-outline';
           } else if (route.name === 'RegisterStudent') {
-            icon = focused ? '➕' : '➕';
+            iconName = focused ? 'person-add' : 'person-add-outline';
           }
 
-          return (
-            <View style={focused ? styles.iconActiveContainer : styles.iconInactiveContainer}>
-              <Text style={[styles.iconText, { color }]}>{icon}</Text>
-            </View>
-          );
+          return <Ionicons name={iconName} size={24} color={color} />;
         },
       })}
     >

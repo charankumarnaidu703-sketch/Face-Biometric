@@ -114,7 +114,8 @@ export default function StudentFoundModalScreen({ route, navigation }) {
             {/* Student Info */}
             <Text style={styles.studentName}>{result.student.name}</Text>
             <Text style={styles.studentMeta}>
-              Roll: {result.student.roll_number}   ·   Room: {result.student.room_number}
+              Roll: {result.student.roll_number}   ·   Room: {result.student.room_number || 'N/A'}{'\n'}
+              Phone: {result.student.phone || 'N/A'}
             </Text>
 
             {/* Confirm Check-in / Check-out Button */}

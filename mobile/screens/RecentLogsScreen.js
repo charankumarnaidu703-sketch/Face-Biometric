@@ -11,9 +11,12 @@ import {
   RefreshControl,
   Image,
   Platform,
+  Alert,
 } from 'react-native';
 import { getRecentLogs } from '../services/api';
 import useStore from '../store/useStore';
+import { Ionicons } from '@expo/vector-icons';
+import StudentDetailsModal from '../components/StudentDetailsModal';
 
 export default function RecentLogsScreen({ navigation }) {
   const user = useStore((s) => s.user); // Guard user details
@@ -21,6 +24,14 @@ export default function RecentLogsScreen({ navigation }) {
   const [logs, setLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [activeFilter, setActiveFilter] = useState('IN'); // 'IN' or 'OUT'
+  const [selectedLog, setSelectedLog] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleLogPress = (item) => {
+    setSelectedLog(item);
+    setModalVisible(true);
+  };
 
   const handleLogout = async () => {
     await logout();
@@ -53,7 +64,11 @@ export default function RecentLogsScreen({ navigation }) {
 
   const formatLogDate = (isoString) => {
     try {
-      const date = new Date(isoString);
+      let safeStr = isoString;
+      if (safeStr && !safeStr.includes('Z') && !safeStr.includes('+')) {
+        safeStr += 'Z';
+      }
+      const date = new Date(safeStr);
       const today = new Date();
       const yesterday = new Date();
       yesterday.setDate(today.getDate() - 1);
@@ -76,7 +91,11 @@ export default function RecentLogsScreen({ navigation }) {
 
   const formatTime = (isoString) => {
     try {
-      const date = new Date(isoString);
+      let safeStr = isoString;
+      if (safeStr && !safeStr.includes('Z') && !safeStr.includes('+')) {
+        safeStr += 'Z';
+      }
+      const date = new Date(safeStr);
       return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     } catch (e) {
       return '';
@@ -119,7 +138,7 @@ export default function RecentLogsScreen({ navigation }) {
     const gateLabel = item.gate === 'MAIN_GATE' ? 'Biometric Gate A' : 'Biometric Gate B';
 
     return (
-      <View style={styles.logCard}>
+      <TouchableOpacity style={styles.logCard} onPress={() => handleLogPress(item)} activeOpacity={0.75}>
         {/* Left Side: Student Avatar with red/green status border */}
         <View
           style={[
@@ -151,7 +170,7 @@ export default function RecentLogsScreen({ navigation }) {
             {item.students?.name || 'Unknown Student'}
           </Text>
           <Text style={styles.studentSub} numberOfLines={1}>
-            {gateLabel}
+            {item.students?.roll_number ? `${item.students.roll_number} • Room ${item.students.room_number || 'N/A'}` : gateLabel}
           </Text>
         </View>
 
@@ -169,11 +188,12 @@ export default function RecentLogsScreen({ navigation }) {
             </Text>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 
-  const flattenedData = groupLogsByDate(logs);
+  const filteredLogs = logs.filter((log) => log.action?.toUpperCase() === activeFilter);
+  const flattenedData = groupLogsByDate(filteredLogs);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -183,7 +203,7 @@ export default function RecentLogsScreen({ navigation }) {
       <View style={styles.headerBar}>
         <View style={styles.headerContent}>
           <TouchableOpacity style={styles.menuButton} onPress={handleLogout} activeOpacity={0.7}>
-            <Text style={styles.menuIcon}>🚪</Text>
+            <Ionicons name="log-out-outline" size={22} color="#DC2626" />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Hostel Biometric</Text>
           <View style={styles.avatarCircle}>
@@ -203,13 +223,51 @@ export default function RecentLogsScreen({ navigation }) {
 
       {/* Main Title Row */}
       <View style={styles.titleRow}>
-        <Text style={styles.screenTitle}>Recent Activity Logs</Text>
+        <View>
+          <Text style={styles.screenTitle}>Access Logs</Text>
+          <Text style={styles.subTitle}>REAL-TIME AUDIT LOGS</Text>
+        </View>
         <TouchableOpacity
           style={styles.refreshButton}
           onPress={() => fetchLogs(true)}
           activeOpacity={0.8}
         >
-          <Text style={styles.refreshIcon}>🔄</Text>
+          <Ionicons name="refresh-outline" size={20} color="#2563EB" />
+        </TouchableOpacity>
+      </View>
+
+      {/* Toggle Segment Controls */}
+      <View style={styles.toggleContainer}>
+        <TouchableOpacity
+          style={[styles.toggleButton, activeFilter === 'IN' && styles.toggleButtonActive]}
+          onPress={() => setActiveFilter('IN')}
+          activeOpacity={0.8}
+        >
+          <Ionicons 
+            name="enter-outline" 
+            size={18} 
+            color={activeFilter === 'IN' ? '#FFFFFF' : '#737686'} 
+            style={{ marginRight: 6 }} 
+          />
+          <Text style={[styles.toggleButtonText, activeFilter === 'IN' && styles.toggleButtonTextActive]}>
+            Checked In
+          </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.toggleButton, activeFilter === 'OUT' && styles.toggleButtonActive]}
+          onPress={() => setActiveFilter('OUT')}
+          activeOpacity={0.8}
+        >
+          <Ionicons 
+            name="exit-outline" 
+            size={18} 
+            color={activeFilter === 'OUT' ? '#FFFFFF' : '#737686'} 
+            style={{ marginRight: 6 }} 
+          />
+          <Text style={[styles.toggleButtonText, activeFilter === 'OUT' && styles.toggleButtonTextActive]}>
+            Checked Out
+          </Text>
         </TouchableOpacity>
       </View>
 
@@ -244,6 +302,14 @@ export default function RecentLogsScreen({ navigation }) {
           }
         />
       )}
+
+      <StudentDetailsModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        student={selectedLog?.students}
+        status={selectedLog?.action}
+        time={selectedLog?.timestamp}
+      />
     </SafeAreaView>
   );
 }
@@ -294,6 +360,13 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#2563EB',
   },
+  subTitle: {
+    fontSize: 11,
+    fontWeight: '700',
+    color: '#737686',
+    letterSpacing: 0.8,
+    marginTop: 2,
+  },
 
   // ─── Title and Refresh ─────────────────────────────────────────
   titleRow: {
@@ -303,6 +376,35 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     marginTop: 24,
     marginBottom: 16,
+  },
+  toggleContainer: {
+    flexDirection: 'row',
+    paddingHorizontal: 16,
+    marginBottom: 18,
+  },
+  toggleButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 10,
+    borderRadius: 10,
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: '#E7E7F3',
+  },
+  toggleButtonActive: {
+    backgroundColor: '#2563EB',
+    borderColor: '#2563EB',
+  },
+  toggleButtonText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#737686',
+  },
+  toggleButtonTextActive: {
+    color: '#FFFFFF',
   },
   screenTitle: {
     fontSize: 22,

@@ -15,6 +15,7 @@ import {
   Platform,
 } from 'react-native';
 import { CameraView, useCameraPermissions } from 'expo-camera';
+import { Ionicons } from '@expo/vector-icons';
 import Svg, { Ellipse } from 'react-native-svg';
 import { identifyFace } from '../services/api';
 import useStore from '../store/useStore';
@@ -41,6 +42,7 @@ export default function GuardScanScreen({ navigation }) {
   // Scanning state machine
   const [scanning, setScanning] = useState(false);
   const [scanResult, setScanResult] = useState(null); // null = idle, object = result ready
+  const [cameraFacing, setCameraFacing] = useState('back'); // 'back' or 'front'
 
   // Pulse animation for the oval border when scanning
   const pulseAnim = useRef(new Animated.Value(1)).current;
@@ -85,19 +87,36 @@ export default function GuardScanScreen({ navigation }) {
     try {
       // Capture photo frame from live camera
       const photo = await cameraRef.current.takePictureAsync({
-        quality: 0.6,
+        quality: 0.35,
         base64: true,
       });
 
       triggerFlash();
 
-      // Send to backend for 1:N face identification
-      const res = await identifyFace(photo.base64, user.id);
+      // Send to backend for 1:N face identification (with retry for tunnel errors)
+      let res;
+      let attempts = 0;
+      const maxRetries = 2;
+      while (attempts <= maxRetries) {
+        try {
+          res = await identifyFace(photo.base64, user.id, cameraFacing === 'front');
+          break;
+        } catch (retryErr) {
+          const status = retryErr?.response?.status;
+          if ((status === 502 || status === 503) && attempts < maxRetries) {
+            attempts++;
+            await new Promise(r => setTimeout(r, 1000));
+          } else {
+            throw retryErr;
+          }
+        }
+      }
       setScanResult(res.data);
     } catch (err) {
       console.error('Scan failed:', err);
-      const message =
-        err?.response?.data?.detail || 'Scan failed. Please try again.';
+      const detail = err?.response?.data?.detail;
+      const reason = err?.response?.data?.reason;
+      const message = detail || reason || 'Scan failed. Please try again.';
       Alert.alert('Scan Error', message);
     } finally {
       setScanning(false);
@@ -178,9 +197,11 @@ export default function GuardScanScreen({ navigation }) {
                   },
                 ]}
               >
-                <Text style={styles.resultIconEmoji}>
-                  {isMatched ? '✅' : '❌'}
-                </Text>
+                <Ionicons 
+                  name={isMatched ? "checkmark-circle" : "close-circle"} 
+                  size={54} 
+                  color={isMatched ? "#16A34A" : "#DC2626"} 
+                />
               </View>
             )}
 
@@ -212,6 +233,13 @@ export default function GuardScanScreen({ navigation }) {
                   <Text style={styles.resultLabel}>Roll No.</Text>
                   <Text style={styles.resultValue}>
                     {scanResult.student.roll_number}
+                  </Text>
+                </View>
+                <View style={styles.resultDivider} />
+                <View style={styles.resultRow}>
+                  <Text style={styles.resultLabel}>Phone</Text>
+                  <Text style={styles.resultValue}>
+                    {scanResult.student.phone || 'N/A'}
                   </Text>
                 </View>
                 <View style={styles.resultDivider} />
@@ -317,7 +345,7 @@ export default function GuardScanScreen({ navigation }) {
       <CameraView
         ref={cameraRef}
         style={styles.camera}
-        facing="front"
+        facing={cameraFacing}
       >
         {/* Header Bar */}
         <SafeAreaView style={styles.headerBar}>
@@ -347,7 +375,7 @@ export default function GuardScanScreen({ navigation }) {
         {/* Instruction Label */}
         <View style={styles.instructionContainer}>
           <View style={styles.instructionPill}>
-            <Text style={styles.instructionIcon}>👤</Text>
+            <Ionicons name="scan-outline" size={16} color="#FFFFFF" style={{ marginRight: 6 }} />
             <Text style={styles.instructionText}>
               {scanning ? 'Scanning face...' : 'Center face in oval'}
             </Text>
@@ -401,6 +429,15 @@ export default function GuardScanScreen({ navigation }) {
             <Text style={styles.scanButtonText}>
               {scanning ? 'SCANNING...' : 'SCAN FACE'}
             </Text>
+          </TouchableOpacity>
+
+          {/* Flip Camera Button */}
+          <TouchableOpacity
+            style={styles.flipButton}
+            onPress={() => setCameraFacing(prev => prev === 'back' ? 'front' : 'back')}
+            activeOpacity={0.7}
+          >
+            <Ionicons name="camera-reverse-outline" size={28} color="#FFFFFF" />
           </TouchableOpacity>
         </View>
       </CameraView>
@@ -520,7 +557,10 @@ const styles = StyleSheet.create({
     bottom: 36,
     left: 0,
     right: 0,
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
+    gap: 16,
   },
   scanButton: {
     flexDirection: 'row',
@@ -548,6 +588,16 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '800',
     letterSpacing: 1.5,
+  },
+  flipButton: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
 
   // ─── Permission Gate ──────────────────────────────────────────

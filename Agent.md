@@ -31,6 +31,8 @@ The project is organized into two main parts:
 * **[main.py](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/backend/main.py)**: The entry point of the FastAPI application. Wires up all API routers and configures CORS middleware.
 * **[test_face.py](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/backend/test_face.py)**: Standalone proof-of-concept test script for verifying local `face_recognition` library operations.
 * **[test_api.py](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/backend/test_api.py)**: Automated end-to-end integration test script for all backend API endpoints.
+* **[reset_db_temp.py](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/backend/reset_db_temp.py)**: Temporary utility script to reset all student database tables and delete registered face files without clearing administrative users.
+* **[seed_real_faces.py](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/backend/seed_real_faces.py)**: Seeding script to fetch 1,000 real human face portraits and extract their actual 128-dimensional face embeddings for functional biometric testing.
 * **[requirements.txt](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/backend/requirements.txt)**: List of Python dependencies.
 * **[Dockerfile](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/backend/Dockerfile)**: Docker container configuration for compilation of C++ libraries (dlib/face_recognition) and production FastAPI hosting.
 * **[.env](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/backend/.env)**: Environment variables (Supabase credentials, secrets).
@@ -42,6 +44,7 @@ The project is organized into two main parts:
   * **[outpass.py](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/backend/routes/outpass.py)**: Endpoints for recent log history and currently out-of-hostel tracking.
 * **`services/`**: Core logic and integrations.
   * **[face_engine.py](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/backend/services/face_engine.py)**: Interface to `face_recognition` library for embedding extraction and matching.
+  * **[college_cache.py](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/backend/services/college_cache.py)**: In-memory TTL cache mapping user IDs to college names and user IDs, eliminating redundant DB calls.
   * **[supabase_client.py](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/backend/services/supabase_client.py)**: Instantiates the Supabase client for database operations.
 * **`models/`**: Data validations and schemas.
   * **[schemas.py](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/backend/models/schemas.py)**: Pydantic models for API request/response validation.
@@ -52,6 +55,8 @@ The client mobile application built with React Native and Expo. Key files and di
 * **[app.json](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/mobile/app.json)**: Configuration manifest for Expo SDK (app name, icon, splash, native plugin configurations).
 * **[package.json](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/mobile/package.json)**: Declares all dependencies (React Navigation, Zustand, Expo Camera, Tailwind/NativeWind, etc.).
 * **`assets/`**: Standard directory containing icons, splash screen image, and custom fonts.
+* **`components/`**: Reusable UI components.
+  * **[StudentDetailsModal.js](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/mobile/components/StudentDetailsModal.js)**: Card overlay modal displaying student profile picture, Roll Number, Room Number, Phone Number, Branch, and Status.
 * **`designs/`**: Contains the 8 high-fidelity reference screen layouts generated from the design system.
 * **`store/`**: Global state management.
   * **[useStore.js](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/mobile/store/useStore.js)**: Zustand store that handles authentication and session state, synchronized with hardware keychain storage.
@@ -64,10 +69,12 @@ The client mobile application built with React Native and Expo. Key files and di
   * **[FaceEnrollmentScreen.js](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/mobile/screens/FaceEnrollmentScreen.js)**: Live camera interface utilizing expo-camera to register 3 face profile perspectives of a resident.
   * **[StudentListScreen.js](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/mobile/screens/StudentListScreen.js)**: Scrollable directory roster displaying registered students and their biometric registration status.
   * **[AdminTabNavigator.js](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/mobile/screens/AdminTabNavigator.js)**: Nested bottom tab navigator hosting the admin dashboard, registration form, and roster screens.
+  * **[GuardHomeScreen.js](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/mobile/screens/GuardHomeScreen.js)**: Gate Guard Dashboard console rendering real-time statistics cards (in/out/pending metrics) and quick-action launcher buttons.
   * **[GuardScanScreen.js](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/mobile/screens/GuardScanScreen.js)**: Core guard verification camera screen. Captures face frames, performs 1:N identification via backend API, and displays match results in an inline modal overlay.
   * **[StudentFoundModalScreen.js](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/mobile/screens/StudentFoundModalScreen.js)**: Action confirmation drawer screen that appears after identification. Displays student profile metadata, match confidence percentage, IN/OUT activity logging buttons, and warning cards for unknown persons.
-  * **[RecentLogsScreen.js](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/mobile/screens/RecentLogsScreen.js)**: Guard activity ledger feed. Displays live check-in and check-out logs grouped chronologically by date sections, featuring pull-to-refresh actions and status badges.
-  * **[GuardTabNavigator.js](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/mobile/screens/GuardTabNavigator.js)**: Bottom tab navigator hosting the guard camera verification scanner and recent activity ledger.
+  * **[RecentLogsScreen.js](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/mobile/screens/RecentLogsScreen.js)**: Guard activity ledger feed split by Checked In and Checked Out log segments, allowing modal student details overview.
+  * **[OutsideStudentsScreen.js](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/mobile/screens/OutsideStudentsScreen.js)**: Roster of students currently checked out outside the hostel gates, support modal detail popup.
+  * **[GuardTabNavigator.js](file:///Users/charankumar/Documents/Personal-Projects/My%20Projects/Face%20Biometric/mobile/screens/GuardTabNavigator.js)**: Bottom tab navigator hosting the guard dashboard, scanner, outside roster, and access ledger.
 
 ---
 

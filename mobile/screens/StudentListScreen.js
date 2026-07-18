@@ -16,6 +16,8 @@ import {
 } from 'react-native';
 import useStore from '../store/useStore';
 import { getStudents } from '../services/api';
+import { Ionicons } from '@expo/vector-icons';
+import StudentDetailsModal from '../components/StudentDetailsModal';
 
 export default function StudentListScreen({ navigation }) {
   const user = useStore((s) => s.user);
@@ -25,13 +27,15 @@ export default function StudentListScreen({ navigation }) {
   const [refreshing, setRefreshing] = useState(false);
   const [students, setStudents] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
   // Fetch list of students
   const fetchStudents = async () => {
     if (!user?.id) return;
     try {
       const res = await getStudents(user.id);
-      setStudents(res.data || []);
+      setStudents(res.data.students || []);
       setRefreshing(false);
     } catch (err) {
       console.error('Failed to load students roster:', err);
@@ -56,7 +60,7 @@ export default function StudentListScreen({ navigation }) {
     const query = searchQuery.toLowerCase().trim();
     return students.filter(
       (s) =>
-        s.full_name?.toLowerCase().includes(query) ||
+        s.name?.toLowerCase().includes(query) ||
         s.roll_number?.toLowerCase().includes(query) ||
         s.room_number?.toLowerCase().includes(query) ||
         s.department?.toLowerCase().includes(query)
@@ -64,29 +68,27 @@ export default function StudentListScreen({ navigation }) {
   };
 
   const handleCardPress = (student) => {
-    const isEnrolled = student.face_embedding !== null;
+    const isEnrolled = student.is_enrolled === true;
     if (!isEnrolled) {
       // Direct shortcut to enrollment camera if they don't have facial biometrics setup
       Alert.alert(
         'Biometric Setup Needed',
-        `${student.full_name} is not enrolled. Set up face biometrics now?`,
+        `${student.name} is not enrolled. Set up face biometrics now?`,
         [
           {
             text: 'Enroll Face',
             onPress: () =>
               navigation.navigate('FaceEnrollment', {
                 studentId: student.id,
-                studentName: student.full_name,
+                studentName: student.name,
               }),
           },
           { text: 'Cancel', style: 'cancel' },
         ]
       );
     } else {
-      Alert.alert(
-        'Student Enrolled',
-        `${student.full_name} is already registered with face biometrics.\nID: ${student.roll_number}\nRoom: ${student.room_number || 'N/A'}`
-      );
+      setSelectedStudent(student);
+      setModalVisible(true);
     }
   };
 
@@ -108,7 +110,7 @@ export default function StudentListScreen({ navigation }) {
       {/* Top App Bar */}
       <View style={styles.appBar}>
         <TouchableOpacity style={styles.appBarButton} onPress={() => navigation.goBack()}>
-          <Text style={styles.appBarIcon}>⬅️</Text>
+          <Ionicons name="arrow-back-outline" size={24} color="#191B23" />
         </TouchableOpacity>
         <Text style={styles.appBarTitle}>Roster</Text>
         <View style={styles.avatar}>
@@ -119,7 +121,7 @@ export default function StudentListScreen({ navigation }) {
       {/* Sticky Search bar container */}
       <View style={styles.searchContainer}>
         <View style={styles.searchBox}>
-          <Text style={styles.searchIcon}>🔍</Text>
+          <Ionicons name="search-outline" size={18} color="#737686" style={{ marginRight: 8 }} />
           <TextInput
             style={styles.searchInput}
             placeholder="Search by name, ID, or room..."
@@ -148,7 +150,7 @@ export default function StudentListScreen({ navigation }) {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#2563EB']} />
         }
         renderItem={({ item }) => {
-          const isEnrolled = item.face_embedding !== null;
+          const isEnrolled = item.is_enrolled === true;
           return (
             <TouchableOpacity
               style={[
@@ -163,11 +165,11 @@ export default function StudentListScreen({ navigation }) {
                   {item.photo_url ? (
                     <Image source={{ uri: item.photo_url }} style={styles.avatarImage} />
                   ) : (
-                    <Text style={styles.avatarTextIcon}>👤</Text>
+                    <Ionicons name="person" size={20} color="#737686" />
                   )}
                 </View>
                 <View style={styles.headerDetails}>
-                  <Text style={styles.studentName}>{item.full_name}</Text>
+                  <Text style={styles.studentName}>{item.name}</Text>
                   <Text style={styles.studentId}>ID: {item.roll_number}</Text>
                 </View>
                 {/* Status Badge */}
@@ -224,6 +226,12 @@ export default function StudentListScreen({ navigation }) {
             </Text>
           </View>
         }
+      />
+
+      <StudentDetailsModal
+        visible={modalVisible}
+        onClose={() => setModalVisible(false)}
+        student={selectedStudent}
       />
     </SafeAreaView>
   );

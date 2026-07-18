@@ -52,6 +52,9 @@ export const registerStudent = (studentData) =>
 export const getStudents = (userId) =>
   api.get(`/api/students/list/${userId}`);
 
+export const getStudentStats = (userId) =>
+  api.get(`/api/students/stats/${userId}`);
+
 export const getStudentDetail = (studentId) =>
   api.get(`/api/students/${studentId}`);
 
@@ -62,8 +65,8 @@ export const getStudentStatus = (studentId) =>
 export const enrollFace = (studentId, base64Image) =>
   api.post('/api/face/enroll', { student_id: studentId, base64_image: base64Image });
 
-export const identifyFace = (base64Image, adminUserId) =>
-  api.post('/api/face/identify', { base64_image: base64Image, admin_user_id: adminUserId });
+export const identifyFace = (base64Image, adminUserId, isFrontCamera = false) =>
+  api.post('/api/face/identify', { base64_image: base64Image, admin_user_id: adminUserId, is_front_camera: isFrontCamera });
 
 export const logAction = (studentId, action, confidence, loggedBy, gate = 'MAIN_GATE') =>
   api.post('/api/face/log-action', {

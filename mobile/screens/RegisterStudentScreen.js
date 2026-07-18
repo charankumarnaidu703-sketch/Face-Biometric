@@ -15,6 +15,7 @@ import {
   Modal,
   FlatList,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import useStore from '../store/useStore';
 import { registerStudent } from '../services/api';
 
@@ -118,7 +119,7 @@ export default function RegisterStudentScreen({ navigation }) {
           onPress={() => navigation.goBack()}
           activeOpacity={0.7}
         >
-          <Text style={styles.backArrow}>⬅️</Text>
+          <Ionicons name="arrow-back-outline" size={24} color="#191B23" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Register Student</Text>
       </View>
@@ -187,7 +188,7 @@ export default function RegisterStudentScreen({ navigation }) {
                 >
                   {getYearLabel()}
                 </Text>
-                <Text style={styles.dropdownArrow}>▼</Text>
+                <Ionicons name="chevron-down-outline" size={16} color="#737686" />
               </TouchableOpacity>
             </View>
 
@@ -226,7 +227,7 @@ export default function RegisterStudentScreen({ navigation }) {
 
             {/* Encryption Indicator */}
             <View style={styles.encryptionRow}>
-              <Text style={styles.encryptionIcon}>🛡️</Text>
+              <Ionicons name="shield-checkmark" size={18} color="#10B981" style={{ marginRight: 6 }} />
               <Text style={styles.encryptionText}>
                 Data secured via end-to-end encryption.
               </Text>
@@ -244,9 +245,10 @@ export default function RegisterStudentScreen({ navigation }) {
               {loading ? (
                 <ActivityIndicator color="#FFFFFF" size="small" />
               ) : (
-                <Text style={styles.ctaButtonText}>
-                  Continue to Face Scan  ➔
-                </Text>
+                <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                  <Text style={styles.ctaButtonText}>Continue to Face Scan</Text>
+                  <Ionicons name="arrow-forward-outline" size={18} color="#FFFFFF" style={{ marginLeft: 8 }} />
+                </View>
               )}
             </TouchableOpacity>
           </View>

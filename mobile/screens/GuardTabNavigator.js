@@ -1,8 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View, Platform } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { Ionicons } from '@expo/vector-icons';
 
 // Screens
+import GuardHomeScreen from './GuardHomeScreen';
 import GuardScanScreen from './GuardScanScreen';
 import RecentLogsScreen from './RecentLogsScreen';
 import OutsideStudentsScreen from './OutsideStudentsScreen';
@@ -19,23 +21,28 @@ export default function GuardTabNavigator() {
         tabBarStyle: styles.tabBar,
         tabBarLabelStyle: styles.tabBarLabel,
         tabBarIcon: ({ color, focused }) => {
-          let icon = '❓';
-          if (route.name === 'ScanTab') {
-            icon = '📷';
-          } else if (route.name === 'LogsTab') {
-            icon = '📋';
+          let iconName = 'help-circle-outline';
+          if (route.name === 'HomeTab') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'ScanTab') {
+            iconName = focused ? 'camera' : 'camera-outline';
           } else if (route.name === 'OutsideTab') {
-            icon = '📤';
+            iconName = focused ? 'exit' : 'exit-outline';
+          } else if (route.name === 'LogsTab') {
+            iconName = focused ? 'document-text' : 'document-text-outline';
           }
 
-          return (
-            <View style={focused ? styles.iconActiveContainer : styles.iconInactiveContainer}>
-              <Text style={[styles.iconText, { color }]}>{icon}</Text>
-            </View>
-          );
+          return <Ionicons name={iconName} size={24} color={color} />;
         },
       })}
     >
+      <Tab.Screen
+        name="HomeTab"
+        component={GuardHomeScreen}
+        options={{
+          tabBarLabel: 'Home',
+        }}
+      />
       <Tab.Screen
         name="ScanTab"
         component={GuardScanScreen}

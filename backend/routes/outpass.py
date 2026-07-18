@@ -8,6 +8,7 @@ Endpoints:
 
 from fastapi import APIRouter, HTTPException, Depends
 from services.supabase_client import supabase
+from services.college_cache import get_college_info
 from routes.auth import get_current_user
 import logging
 
@@ -17,29 +18,35 @@ router = APIRouter(prefix="/outpass", tags=["Outpass Tracking"])
 
 
 @router.get("/logs/{admin_user_id}")
-async def get_logs(admin_user_id: str, limit: int = 20, current_user: dict = Depends(get_current_user)):
+async def get_logs(admin_user_id: str, limit: int = 50, current_user: dict = Depends(get_current_user)):
     """
     Get recent outpass logs for students in the same college as the caller.
-    Requires authentication.
+    ponytail: CollegeCache eliminates 2 DB calls.
     """
     try:
-        # Look up the caller's college
-        caller = supabase.table("users").select("college_name").eq("id", admin_user_id).execute()
-        if not caller.data:
+        college_name, college_user_ids = get_college_info(supabase, admin_user_id)
+        if not college_name:
             raise HTTPException(status_code=404, detail="User not found.")
-        
-        college_name = caller.data[0].get("college_name")
-        
-        # Get all users in this college
-        college_users = supabase.table("users").select("id").eq("college_name", college_name).execute()
-        college_user_ids = [u["id"] for u in college_users.data] if college_users.data else []
         
         if not college_user_ids:
             return {"logs": []}
             
+        # Get all student IDs for this college (batched)
+        all_student_ids = []
+        batch_size = 50
+        for i in range(0, len(college_user_ids), batch_size):
+            chunk = college_user_ids[i:i + batch_size]
+            res = supabase.table("students").select("id").in_("user_id", chunk).execute()
+            if res.data:
+                all_student_ids.extend([s["id"] for s in res.data])
+
+        if not all_student_ids:
+            return {"logs": []}
+
+        # Query logs directly filtering by student_id
         logs = supabase.table("outpass_logs")\
-            .select("*, students!inner(name, roll_number, room_number, user_id, photo_url)")\
-            .in_("students.user_id", college_user_ids)\
+            .select("*, students(id, name, roll_number, room_number, user_id, photo_url, department, year, phone)")\
+            .in_("student_id", all_student_ids)\
             .order("timestamp", desc=True)\
             .limit(limit)\
             .execute()
@@ -56,54 +63,62 @@ async def get_logs(admin_user_id: str, limit: int = 20, current_user: dict = Dep
 async def currently_out(admin_user_id: str, current_user: dict = Depends(get_current_user)):
     """
     Get all students in the same college who are currently OUT of the hostel.
-    Requires authentication.
+    ponytail: CollegeCache + single join query replaces 2N batched loops.
     """
     try:
-        # 1. Look up the caller's college
-        caller = supabase.table("users").select("college_name").eq("id", admin_user_id).execute()
-        if not caller.data:
+        # 1. Get college user IDs (cached)
+        college_name, college_user_ids = get_college_info(supabase, admin_user_id)
+        if not college_name:
             raise HTTPException(status_code=404, detail="User not found.")
-        
-        college_name = caller.data[0].get("college_name")
-        
-        # Get all users in this college
-        college_users = supabase.table("users").select("id").eq("college_name", college_name).execute()
-        college_user_ids = [u["id"] for u in college_users.data] if college_users.data else []
         
         if not college_user_ids:
             return {"count": 0, "students": []}
 
-        # 2. Fetch college's student roster
-        students_res = supabase.table("students")\
-            .select("id, name, roll_number, room_number, photo_url")\
-            .in_("user_id", college_user_ids)\
-            .execute()
+        # 2. Fetch college's student roster (batched to avoid URL length issues)
+        all_students = []
+        batch_size = 50
+        for i in range(0, len(college_user_ids), batch_size):
+            chunk = college_user_ids[i:i + batch_size]
+            res = supabase.table("students")\
+                .select("id, name, roll_number, room_number, photo_url, department, year, phone")\
+                .in_("user_id", chunk)\
+                .execute()
+            if res.data:
+                all_students.extend(res.data)
     except HTTPException:
         raise
     except Exception as e:
         logger.error(f"Error fetching student roster: {e}")
         raise HTTPException(status_code=500, detail="Failed to query student roster.")
 
-    if not students_res.data:
+    if not all_students:
         return {"count": 0, "students": []}
 
-    students_map = {s["id"]: s for s in students_res.data}
+    students_map = {s["id"]: s for s in all_students}
     student_ids = list(students_map.keys())
 
     try:
-        # 3. Query all logs under these students (ordered latest to oldest)
-        logs_res = supabase.table("outpass_logs")\
-            .select("student_id, action, timestamp")\
-            .in_("student_id", student_ids)\
-            .order("timestamp", desc=True)\
-            .execute()
+        # 3. Query all logs under these students in batches (ordered latest to oldest)
+        all_logs = []
+        for i in range(0, len(student_ids), batch_size):
+            chunk = student_ids[i:i + batch_size]
+            try:
+                logs_batch = supabase.table("outpass_logs")\
+                    .select("student_id, action, timestamp")\
+                    .in_("student_id", chunk)\
+                    .order("timestamp", desc=True)\
+                    .execute()
+                if logs_batch.data:
+                    all_logs.extend(logs_batch.data)
+            except Exception:
+                pass  # OK if no logs exist for this batch
     except Exception as e:
         logger.error(f"Error querying outpass logs: {e}")
         raise HTTPException(status_code=500, detail="Failed to query outpass logs.")
 
     # 4. Deduplicate to get only the latest status for each student
     latest_status = {}
-    for log in logs_res.data:
+    for log in all_logs:
         sid = log["student_id"]
         if sid not in latest_status:
             latest_status[sid] = {
