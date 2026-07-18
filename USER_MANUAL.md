@@ -110,7 +110,7 @@ The dashboard provides an instant overview of hostel activity:
 1. Tap the **Register** tab at the bottom of the screen.
 2. Fill in the student's profile details:
    * **Full Name**: e.g., `Charan Kumar`
-   * **Roll Number / ID**: e.g., `NITW20260001` *(Must be unique)*
+   * **Roll Number / ID**: e.g., `O230032` *(Must be unique)*
    * **Phone Number**: e.g., `+91 9876543210` *(Used for emergency guard contact)*
    * **Room Number**: e.g., `B-304`
    * **Department / Branch**: e.g., `Computer Science`
